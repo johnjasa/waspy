@@ -24,7 +24,7 @@ def add_geometry_to_problem(prob, surfaces):
 
     return prob
 
-def connect_problem(prob, surfaces):
+def connect_problem(prob, surfaces, problem_settings):
     # Loop through and add a certain number of aerostruct points
     for i in range(2):
 
@@ -63,6 +63,7 @@ def connect_problem(prob, surfaces):
 
             # Connect aerodyamic mesh to coupled group mesh
             prob.model.connect(name + '.mesh', point_name + '.coupled.' + name + '.mesh')
+
             if surface['struct_weight_relief']:
                 prob.model.connect(name + '.element_mass', point_name + '.coupled.' + name + '.element_mass')
 
@@ -84,9 +85,12 @@ def connect_problem(prob, surfaces):
             prob.model.connect(name + '.t_over_c', com_name + 't_over_c')
 
             coupled_name = point_name + '.coupled.' + name
-            prob.model.connect('point_masses', coupled_name + '.point_masses')
-            prob.model.connect('engine_thrusts', coupled_name + '.engine_thrusts')
-            prob.model.connect('point_mass_locations', coupled_name + '.point_mass_locations')
+            if problem_settings['engine_thrust']:
+                prob.model.connect('engine_thrusts', coupled_name + '.engine_thrusts')
+            if problem_settings['engine_mass']:
+                prob.model.connect('point_masses', coupled_name + '.point_masses')
+            if problem_settings['engine_mass'] or problem_settings['engine_thrust']:
+                prob.model.connect('point_mass_locations', coupled_name + '.point_mass_locations')
 
     prob.model.connect('alpha', 'AS_point_0' + '.alpha')
     prob.model.connect('alpha_maneuver', 'AS_point_1' + '.alpha')
@@ -111,7 +115,7 @@ def connect_problem(prob, surfaces):
 
     return prob
 
-def add_driver(prob):
+def add_driver(prob, problem_settings):
     from openmdao.api import pyOptSparseDriver
     prob.driver = pyOptSparseDriver()
     prob.driver.options['optimizer'] = "SNOPT"
@@ -148,8 +152,10 @@ def add_driver(prob):
         'AS_point_1.wing_perf.vonmises',
         'AS_point_0.coupled.wing.def_mesh',
         'AS_point_1.coupled.wing.def_mesh',
-        'point_mass_locations',
         ]
+
+    if problem_settings['engine_mass'] or problem_settings['engine_thrust']:
+        prob.driver.recording_options['includes'].extend(['point_mass_locations'])
 
     prob.driver.recording_options['record_objectives'] = True
     prob.driver.recording_options['record_constraints'] = True
