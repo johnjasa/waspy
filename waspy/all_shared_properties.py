@@ -24,7 +24,7 @@ def add_geometry_to_problem(prob, surfaces):
 
     return prob
 
-def connect_problem(prob, surfaces, problem_settings):
+def connect_problem(prob, surfaces, case_settings):
     # Loop through and add a certain number of aerostruct points
     for i in range(2):
 
@@ -85,11 +85,11 @@ def connect_problem(prob, surfaces, problem_settings):
             prob.model.connect(name + '.t_over_c', com_name + 't_over_c')
 
             coupled_name = point_name + '.coupled.' + name
-            if problem_settings['engine_thrust']:
+            if case_settings['engine_thrust']:
                 prob.model.connect('engine_thrusts', coupled_name + '.engine_thrusts')
-            if problem_settings['engine_mass']:
+            if case_settings['engine_mass']:
                 prob.model.connect('point_masses', coupled_name + '.point_masses')
-            if problem_settings['engine_mass'] or problem_settings['engine_thrust']:
+            if case_settings['engine_mass'] or case_settings['engine_thrust']:
                 prob.model.connect('point_mass_locations', coupled_name + '.point_mass_locations')
 
     prob.model.connect('alpha', 'AS_point_0' + '.alpha')
@@ -115,7 +115,7 @@ def connect_problem(prob, surfaces, problem_settings):
 
     return prob
 
-def add_driver(prob, problem_settings):
+def add_driver(prob, case_settings):
     from openmdao.api import pyOptSparseDriver
     prob.driver = pyOptSparseDriver()
     prob.driver.options['optimizer'] = "SNOPT"
@@ -154,7 +154,7 @@ def add_driver(prob, problem_settings):
         'AS_point_1.coupled.wing.def_mesh',
         ]
 
-    if problem_settings['engine_mass'] or problem_settings['engine_thrust']:
+    if case_settings['engine_mass'] or case_settings['engine_thrust']:
         prob.driver.recording_options['includes'].extend(['point_mass_locations'])
 
     prob.driver.recording_options['record_objectives'] = True

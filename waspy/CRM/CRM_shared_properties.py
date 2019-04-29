@@ -8,7 +8,7 @@ from openaerostruct.structures.wingbox_fuel_vol_delta import WingboxFuelVolDelta
 from openaerostruct.utils.constants import grav_constant
 
 
-def get_surfaces(problem_settings):
+def get_surfaces(case_settings):
 
     # Provide coordinates for a portion of an airfoil for the wingbox cross-section as an nparray with dtype=complex (to work with the complex-step approximation for derivatives).
     # These should be for an airfoil with the chord scaled to 1.
@@ -22,8 +22,8 @@ def get_surfaces(problem_settings):
     lower_y = np.array([-0.0447, -0.046, -0.0473, -0.0485, -0.0496, -0.0506, -0.0515, -0.0524, -0.0532, -0.054, -0.0547, -0.0554, -0.056, -0.0565, -0.057, -0.0575, -0.0579, -0.0583, -0.0586, -0.0589, -0.0592, -0.0594, -0.0595, -0.0596, -0.0597, -0.0598, -0.0598, -0.0598, -0.0598, -0.0597, -0.0596, -0.0594, -0.0592, -0.0589, -0.0586, -0.0582, -0.0578, -0.0573, -0.0567, -0.0561, -0.0554, -0.0546, -0.0538, -0.0529, -0.0519, -0.0509, -0.0497, -0.0485, -0.0472, -0.0458, -0.0444], dtype = 'complex128')
 
     # Create a dictionary to store options about the surface
-    mesh_dict = {'num_y' : 31,
-                 'num_x' : 3,
+    mesh_dict = {'num_y' : 51,
+                 'num_x' : 7,
                  'wing_type' : 'uCRM_based',
                  'symmetry' : True,
                  'chord_cos_spacing' : 0,
@@ -62,8 +62,8 @@ def get_surfaces(problem_settings):
                 'CL0' : 0.0,
                 'CD0' : 0.0078,
 
-                'with_viscous' : problem_settings['with_viscous'],  # if true, compute viscous drag
-                'with_wave' : problem_settings['with_wave'],     # if true, compute wave drag
+                'with_viscous' : case_settings['with_viscous'],  # if true, compute viscous drag
+                'with_wave' : case_settings['with_wave'],     # if true, compute wave drag
 
                 # Airfoil properties for viscous drag calculation
                 'k_lam' : 0.05,         # percentage of chord with laminar
@@ -81,22 +81,22 @@ def get_surfaces(problem_settings):
                 'wing_weight_ratio' : 1.25,
                 'exact_failure_constraint' : False, # if false, use KS function
 
-                'struct_weight_relief' : problem_settings['struct_weight_relief'],
-                'distributed_fuel_weight' : problem_settings['distributed_fuel_weight'],
+                'struct_weight_relief' : case_settings['struct_weight_relief'],
+                'distributed_fuel_weight' : case_settings['distributed_fuel_weight'],
 
                 'fuel_density' : 803.,      # [kg/m^3] fuel density (only needed if the fuel-in-wing volume constraint is used)
                 'Wf_reserve' :15000.,       # [kg] reserve fuel mass
 
                 }
 
-    if problem_settings['engine_mass'] or problem_settings['engine_thrust']:
+    if case_settings['engine_mass'] or case_settings['engine_thrust']:
         surf_dict['n_point_masses'] = 1
 
     surfaces = [surf_dict]
 
     return surfaces
 
-def add_prob_vars(problem_settings, surfaces):
+def add_prob_vars(case_settings, surfaces):
     # Create the problem and assign the model group
     prob = Problem()
 
@@ -116,7 +116,7 @@ def add_prob_vars(problem_settings, surfaces):
     indep_var_comp.add_output('empty_cg', val=np.zeros((3)), units='m')
     indep_var_comp.add_output('fuel_mass', val=10000., units='kg')
 
-    if problem_settings['engine_mass']:  # TODO: need to change 10e3 to 7.5e3 to match the point_mass below
+    if case_settings['engine_mass']:  # TODO: need to change 10e3 to 7.5e3 to match the point_mass below, currently comparing to older OAS case
         indep_var_comp.add_output('W0_without_point_masses', val=148000 + surfaces[0]['Wf_reserve'] - 10e3,  units='kg')
 
         prob.model.add_subsystem('W0_comp',
@@ -128,11 +128,14 @@ def add_prob_vars(problem_settings, surfaces):
 
         indep_var_comp.add_output('point_masses', val=point_masses, units='kg')
 
-    if problem_settings['engine_thrust']:
+    else:
+        indep_var_comp.add_output('W0', val=148000 + surfaces[0]['Wf_reserve'], units='kg')
+
+    if case_settings['engine_thrust']:
         engine_thrusts = np.array([[80.e3]])
         indep_var_comp.add_output('engine_thrusts', val=engine_thrusts, units='N')
 
-    if problem_settings['engine_mass'] or problem_settings['engine_thrust']:
+    if case_settings['engine_mass'] or case_settings['engine_thrust']:
         indep_var_comp.add_output('point_mass_locations', val=point_mass_locations, units='m')
 
     prob.model.add_subsystem('prob_vars',
