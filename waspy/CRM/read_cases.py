@@ -24,6 +24,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.animation as manimation
 import sqlitedict
+import niceplots
 
 #####################
 # User-set parameters
@@ -381,9 +382,12 @@ def plot_thicknesses(data, cases):
 
         span, skin_thickness = get_flat_data(mesh, skin_thickness)
 
-        plt.plot(span, skin_thickness)
+        plt.plot(span, skin_thickness, label=case)
+
+    niceplots.draggable_legend()
+    niceplots.adjust_spines()
     plt.show()
 
 data = load_all_cases()
 print_results(data)
-plot_thicknesses(data, ['baseline', 'engine_thrust'])
+plot_thicknesses(data, folders)
