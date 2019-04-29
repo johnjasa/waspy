@@ -167,81 +167,85 @@ def read_db(db_name):
 
     num_iters = np.max([int(len(output_dict['mesh']) / n_names), 1])
 
-    new_mesh = []
-    new_skinthickness = []
-    new_sparthickness = []
-    new_toverc = []
-    new_vonmises = []
-    new_twist = []
-    new_sec_forces = []
-    new_sec_forces_maneuver = []
-    new_def_mesh = []
-    new_def_mesh_maneuver = []
-    new_widths = []
-    new_widths_maneuver = []
-    new_normals = []
-    new_normals_maneuver = []
+    # For now, do not mirror the parameters across the symmetry plane
+    mirror = False
+    if mirror:
 
-    for i in range(num_iters):
-        for j, name in enumerate(names):
-            mirror_mesh = output_dict['mesh'][i*n_names+j].copy()
-            mirror_mesh[:, :, 1] *= -1.
-            mirror_mesh = mirror_mesh[:, ::-1, :][:, 1:, :]
-            new_mesh.append(np.hstack((output_dict['mesh'][i*n_names+j], mirror_mesh)))
+        new_mesh = []
+        new_skinthickness = []
+        new_sparthickness = []
+        new_toverc = []
+        new_vonmises = []
+        new_twist = []
+        new_sec_forces = []
+        new_sec_forces_maneuver = []
+        new_def_mesh = []
+        new_def_mesh_maneuver = []
+        new_widths = []
+        new_widths_maneuver = []
+        new_normals = []
+        new_normals_maneuver = []
 
-            sparthickness = output_dict['spar_thickness'][i*n_names+j]
-            new_sparthickness.append(np.hstack((sparthickness[0], sparthickness[0][::-1])))
-            skinthickness = output_dict['skin_thickness'][i*n_names+j]
-            new_skinthickness.append(np.hstack((skinthickness[0], skinthickness[0][::-1])))
-            toverc = output_dict['t_over_c'][i*n_names+j]
-            new_toverc.append(np.hstack((toverc[0], toverc[0][::-1])))
-            vonmises = output_dict['vonmises'][i*n_names+j]
-            new_vonmises.append(np.hstack((vonmises, vonmises[::-1])))
+        for i in range(num_iters):
+            for j, name in enumerate(names):
+                mirror_mesh = output_dict['mesh'][i*n_names+j].copy()
+                mirror_mesh[:, :, 1] *= -1.
+                mirror_mesh = mirror_mesh[:, ::-1, :][:, 1:, :]
+                new_mesh.append(np.hstack((output_dict['mesh'][i*n_names+j], mirror_mesh)))
 
-            mirror_mesh = output_dict['def_mesh'][i*n_names+j].copy()
-            mirror_mesh[:, :, 1] *= -1.
-            mirror_mesh = mirror_mesh[:, ::-1, :][:, 1:, :]
-            new_def_mesh.append(np.hstack((output_dict['def_mesh'][i*n_names+j], mirror_mesh)))
+                sparthickness = output_dict['spar_thickness'][i*n_names+j]
+                new_sparthickness.append(np.hstack((sparthickness[0], sparthickness[0][::-1])))
+                skinthickness = output_dict['skin_thickness'][i*n_names+j]
+                new_skinthickness.append(np.hstack((skinthickness[0], skinthickness[0][::-1])))
+                toverc = output_dict['t_over_c'][i*n_names+j]
+                new_toverc.append(np.hstack((toverc[0], toverc[0][::-1])))
+                vonmises = output_dict['vonmises'][i*n_names+j]
+                new_vonmises.append(np.hstack((vonmises, vonmises[::-1])))
 
-            mirror_normals = normals[i*n_names+j].copy()
-            mirror_normals = mirror_normals[:, ::-1, :][:, 1:, :]
-            new_normals.append(np.hstack((normals[i*n_names+j], mirror_normals)))
+                mirror_mesh = output_dict['def_mesh'][i*n_names+j].copy()
+                mirror_mesh[:, :, 1] *= -1.
+                mirror_mesh = mirror_mesh[:, ::-1, :][:, 1:, :]
+                new_def_mesh.append(np.hstack((output_dict['def_mesh'][i*n_names+j], mirror_mesh)))
 
-            mirror_forces = sec_forces[i*n_names+j].copy()
-            mirror_forces = mirror_forces[:, ::-1, :]
-            new_sec_forces.append(np.hstack((sec_forces[i*n_names+j], mirror_forces)))
+                mirror_normals = normals[i*n_names+j].copy()
+                mirror_normals = mirror_normals[:, ::-1, :][:, 1:, :]
+                new_normals.append(np.hstack((normals[i*n_names+j], mirror_normals)))
 
-            mirror_mesh_maneuver = output_dict['def_mesh_maneuver'][i*n_names+j].copy()
-            mirror_mesh_maneuver[:, :, 1] *= -1.
-            mirror_mesh_maneuver = mirror_mesh_maneuver[:, ::-1, :][:, 1:, :]
-            new_def_mesh_maneuver.append(np.hstack((output_dict['def_mesh_maneuver'][i*n_names+j], mirror_mesh_maneuver)))
+                mirror_forces = sec_forces[i*n_names+j].copy()
+                mirror_forces = mirror_forces[:, ::-1, :]
+                new_sec_forces.append(np.hstack((sec_forces[i*n_names+j], mirror_forces)))
 
-            mirror_normals_maneuver = normals_maneuver[i*n_names+j].copy()
-            mirror_normals_maneuver = mirror_normals_maneuver[:, ::-1, :][:, 1:, :]
-            new_normals_maneuver.append(np.hstack((normals_maneuver[i*n_names+j], mirror_normals_maneuver)))
+                mirror_mesh_maneuver = output_dict['def_mesh_maneuver'][i*n_names+j].copy()
+                mirror_mesh_maneuver[:, :, 1] *= -1.
+                mirror_mesh_maneuver = mirror_mesh_maneuver[:, ::-1, :][:, 1:, :]
+                new_def_mesh_maneuver.append(np.hstack((output_dict['def_mesh_maneuver'][i*n_names+j], mirror_mesh_maneuver)))
 
-            mirror_forces_maneuver = sec_forces_maneuver[i*n_names+j].copy()
-            mirror_forces_maneuver = mirror_forces_maneuver[:, ::-1, :]
-            new_sec_forces_maneuver.append(np.hstack((sec_forces_maneuver[i*n_names+j], mirror_forces_maneuver)))
+                mirror_normals_maneuver = normals_maneuver[i*n_names+j].copy()
+                mirror_normals_maneuver = mirror_normals_maneuver[:, ::-1, :][:, 1:, :]
+                new_normals_maneuver.append(np.hstack((normals_maneuver[i*n_names+j], mirror_normals_maneuver)))
 
-            new_widths.append(np.hstack((widths[i*n_names+j], widths[i*n_names+j][::-1])))
-            new_widths_maneuver.append(np.hstack((widths_maneuver[i*n_names+j], widths_maneuver[i*n_names+j][::-1])))
-            twist = output_dict['twist'][i*n_names+j]
-            new_twist.append(np.hstack((twist[0], twist[0][::-1][1:])))
+                mirror_forces_maneuver = sec_forces_maneuver[i*n_names+j].copy()
+                mirror_forces_maneuver = mirror_forces_maneuver[:, ::-1, :]
+                new_sec_forces_maneuver.append(np.hstack((sec_forces_maneuver[i*n_names+j], mirror_forces_maneuver)))
 
-    output_dict['mesh'] = new_mesh
+                new_widths.append(np.hstack((widths[i*n_names+j], widths[i*n_names+j][::-1])))
+                new_widths_maneuver.append(np.hstack((widths_maneuver[i*n_names+j], widths_maneuver[i*n_names+j][::-1])))
+                twist = output_dict['twist'][i*n_names+j]
+                new_twist.append(np.hstack((twist[0], twist[0][::-1][1:])))
 
-    output_dict['skin_thickness'] = new_skinthickness
-    output_dict['spar_thickness'] = new_sparthickness
-    output_dict['t_over_c'] = new_toverc
-    output_dict['vonmises'] = new_vonmises
+        output_dict['mesh'] = new_mesh
 
-    output_dict['def_mesh'] = new_def_mesh
-    output_dict['twist'] = new_twist
-    widths = new_widths
-    widths_maneuver = new_widths_maneuver
-    sec_forces = new_sec_forces
-    sec_forces_maneuver = new_sec_forces_maneuver
+        output_dict['skin_thickness'] = new_skinthickness
+        output_dict['spar_thickness'] = new_sparthickness
+        output_dict['t_over_c'] = new_toverc
+        output_dict['vonmises'] = new_vonmises
+
+        output_dict['def_mesh'] = new_def_mesh
+        output_dict['twist'] = new_twist
+        widths = new_widths
+        widths_maneuver = new_widths_maneuver
+        sec_forces = new_sec_forces
+        sec_forces_maneuver = new_sec_forces_maneuver
 
     for i in range(num_iters):
         for j, name in enumerate(names):
@@ -316,32 +320,70 @@ def read_db(db_name):
 
     return output_dict
 
-# Loop through all the runs and load their DBs into the data dict
-folders = ['baseline', 'viscous', 'wave_drag', 'struct_weight', 'fuel_weight', 'engine_mass', 'engine_thrust']
-data = {}
-for folder in folders:
-    print(folder)
-    filename = f'{folder}/aerostruct.db'
-    data[folder] = read_db(filename)
+folders=['baseline', 'viscous', 'wave_drag', 'struct_weight', 'fuel_weight', 'engine_mass', 'engine_thrust']
 
-print(data[folder].keys())
+def load_all_cases():
+    # Loop through all the runs and load their DBs into the data dict
 
-# get max name length:
-max_name_len = max([len(folder) for folder in folders])+2
+    data = {}
+    for folder in folders:
+        print(folder)
+        filename = f'{folder}/aerostruct.db'
+        data[folder] = read_db(filename)
 
-len_header = max_name_len+3+7*13
-print("-"*len_header)
-print("                            Optimized wing properties")
-print("-"*len_header)
+    print(data[folder].keys())
 
-max_name_len = str(max_name_len)
-line_tmpl = '{:<'+max_name_len+'}|  '+'{:>13}'*3
-print(line_tmpl.format('Case', 'struct mass', 'fuel burn', 'CD'))
+    return data
 
-line_tmpl = '{:<'+max_name_len+'}|  '+'{:13.3f}'*3
-for folder in folders:
-    struct_mass = data[folder]['struct_masses'][-1][0]
-    fuelburn = data[folder]['obj'][-1][0]
-    CD = data[folder]['CD'][-1][0]
+def print_results(data):
+    # get max name length:
+    max_name_len = max([len(folder) for folder in folders])+2
 
-    print(line_tmpl.format(folder, struct_mass, fuelburn, CD))
+    len_header = max_name_len+3+7*13
+    print("-"*len_header)
+    print("                            Optimized wing properties")
+    print("-"*len_header)
+
+    max_name_len = str(max_name_len)
+    line_tmpl = '{:<'+max_name_len+'}|  '+'{:>13}'*3
+    print(line_tmpl.format('Case', 'struct mass', 'fuel burn', 'drag counts'))
+
+    line_tmpl = '{:<'+max_name_len+'}|  '+'{:13.3f}'*3
+    for folder in folders:
+        struct_mass = data[folder]['struct_masses'][-1][0]
+        fuelburn = data[folder]['obj'][-1][0]
+        CD = data[folder]['CD'][-1][0] * 10e3
+
+        print(line_tmpl.format(folder, struct_mass, fuelburn, CD))
+
+def get_flat_data(mesh, y_data):
+    # Span is at the nodes, or fenceposts
+    span = (mesh[0, :, 1] / (mesh[0, -1, 1] - mesh[0, 0, 1]))
+    span = span - span[0] - 1
+    span *= -1
+
+    repeats = np.ones((len(span)), dtype='int') * 2
+    repeats[0] = repeats[-1] = 1
+
+    span = np.repeat(span, repeats)
+
+    # y_data are the fences, in between, per panel
+    flat_y_data = np.repeat(y_data, 2)
+
+    return span, flat_y_data
+
+def plot_thicknesses(data, cases):
+    for case in cases:
+        case_data = data[case]
+
+        mesh = case_data['mesh'][-1]
+        skin_thickness = case_data['skin_thickness'][-1][0]
+
+        span, skin_thickness = get_flat_data(mesh, skin_thickness)
+
+        plt.plot(span, skin_thickness)
+    plt.show()
+
+data = load_all_cases()
+print_results(data)
+plot_thicknesses(data, ['baseline', 'engine_thrust'])
