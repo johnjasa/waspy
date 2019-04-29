@@ -53,7 +53,6 @@ def read_db(db_name):
     output_dict['mesh'] = []
     output_dict['def_mesh'] = []
     output_dict['def_mesh_maneuver'] = []
-    output_dict['radius'] = []
     output_dict['spar_thickness'] = []
     output_dict['skin_thickness'] = []
     output_dict['t_over_c'] = []
@@ -74,6 +73,7 @@ def read_db(db_name):
     rho_maneuver = []
     v = []
     output_dict['CL'] = []
+    output_dict['CD'] = []
     output_dict['AR'] = []
     output_dict['S_ref'] = []
     output_dict['obj'] = []
@@ -95,7 +95,6 @@ def read_db(db_name):
         for name in names:
 
             output_dict['mesh'].append(case.outputs[name+'.mesh'])
-            output_dict['radius'].append(case.outputs[name+'.skin_thickness'])
             output_dict['skin_thickness'].append(case.outputs[name+'.skin_thickness'])
             output_dict['spar_thickness'].append(case.outputs[name+'.spar_thickness'])
             output_dict['t_over_c'].append(case.outputs[name+'.t_over_c'])
@@ -127,6 +126,9 @@ def read_db(db_name):
 
             cl_var_name = '{pt_name}.{surf_name}_perf.CL1'.format(pt_name=pt_name, surf_name=name)
             output_dict['CL'].append(case.outputs[cl_var_name])
+
+            cd_var_name = '{pt_name}.total_perf.CD'.format(pt_name=pt_name)
+            output_dict['CD'].append(case.outputs[cd_var_name])
 
             S_ref_var_name = '{pt_name}.coupled.{surf_name}.aero_geom.S_ref'.format(pt_name=pt_name, surf_name=name)
             output_dict['S_ref'].append(case.outputs[S_ref_var_name])
@@ -166,7 +168,6 @@ def read_db(db_name):
     num_iters = np.max([int(len(output_dict['mesh']) / n_names), 1])
 
     new_mesh = []
-    new_r = []
     new_skinthickness = []
     new_sparthickness = []
     new_toverc = []
@@ -233,7 +234,6 @@ def read_db(db_name):
     output_dict['skin_thickness'] = new_skinthickness
     output_dict['spar_thickness'] = new_sparthickness
     output_dict['t_over_c'] = new_toverc
-    output_dict['radius'] = new_r
     output_dict['vonmises'] = new_vonmises
 
     output_dict['def_mesh'] = new_def_mesh
@@ -331,43 +331,17 @@ max_name_len = max([len(folder) for folder in folders])+2
 
 len_header = max_name_len+3+7*13
 print("-"*len_header)
-print("                            Initial wing properties")
-print("-"*len_header)
-
-max_name_len = str(max_name_len)
-line_tmpl = '{:<'+max_name_len+'}|  '+'{:>13}'*2
-print(line_tmpl.format('Case', 'struct mass', 'fuel burn'))
-
-line_tmpl = '{:<'+max_name_len+'}|  '+'{:13.3f}'*2
-for folder in folders:
-    struct_mass = data[folder]['struct_masses'][0][0]
-    fuelburn = data[folder]['obj'][0][0]
-
-    print(line_tmpl.format(folder, struct_mass, fuelburn))
-
-
-# get max name length:
-max_name_len = max([len(folder) for folder in folders])+2
-
-len_header = max_name_len+3+7*13
-print("-"*len_header)
 print("                            Optimized wing properties")
 print("-"*len_header)
 
 max_name_len = str(max_name_len)
-line_tmpl = '{:<'+max_name_len+'}|  '+'{:>13}'*2
-print(line_tmpl.format('Case', 'struct mass', 'fuel burn'))
+line_tmpl = '{:<'+max_name_len+'}|  '+'{:>13}'*3
+print(line_tmpl.format('Case', 'struct mass', 'fuel burn', 'CD'))
 
-line_tmpl = '{:<'+max_name_len+'}|  '+'{:13.3f}'*2
+line_tmpl = '{:<'+max_name_len+'}|  '+'{:13.3f}'*3
 for folder in folders:
     struct_mass = data[folder]['struct_masses'][-1][0]
     fuelburn = data[folder]['obj'][-1][0]
+    CD = data[folder]['CD'][-1][0]
 
-    print(line_tmpl.format(folder, struct_mass, fuelburn))
-
-    # print(line_tmpl.format(e_name, prob[e_name+':frac_W'][0], frac_p,
-    #                        frac_work, prob[e_name+':stat:W'][0], prob[e_name+':tot:T'][0],
-    #                        prob[e_name+':tot:h'][0], prob[e_name+':tot:P'][0]),
-    #       file=file, flush=True)
-
-# Interesting:
+    print(line_tmpl.format(folder, struct_mass, fuelburn, CD))
