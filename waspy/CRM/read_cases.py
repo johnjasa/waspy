@@ -127,7 +127,7 @@ def read_db(db_name):
             cl_var_name = '{pt_name}.{surf_name}_perf.CL1'.format(pt_name=pt_name, surf_name=name)
             output_dict['CL'].append(case.outputs[cl_var_name])
 
-            cd_var_name = '{pt_name}.total_perf.CD'.format(pt_name=pt_name)
+            cd_var_name = '{pt_name}.CD'.format(pt_name=pt_name)
             output_dict['CD'].append(case.outputs[cd_var_name])
 
             S_ref_var_name = '{pt_name}.coupled.{surf_name}.aero_geom.S_ref'.format(pt_name=pt_name, surf_name=name)

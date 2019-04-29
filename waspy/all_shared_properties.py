@@ -123,6 +123,7 @@ def add_driver(prob, case_settings):
     prob.driver.opt_settings['Major feasibility tolerance'] = 1e-6
     prob.driver.opt_settings['Major iterations limit'] = 200
     prob.driver.opt_settings['Verify level'] = -1
+    prob.driver.opt_settings['Nonderivative linesearch'] = None
 
     recorder = SqliteRecorder("aerostruct.db")
     prob.driver.add_recorder(recorder)
