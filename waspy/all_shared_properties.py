@@ -54,7 +54,7 @@ def connect_problem(prob, surfaces, case_settings):
 
             name = surface['name']
 
-            if surface['distributed_fuel_weight']:
+            if surface['distributed_fuel_weight'] or surface['struct_weight_relief']:
                 prob.model.connect('load_factor', point_name + '.coupled.load_factor', src_indices=[i])
 
             com_name = point_name + '.' + name + '_perf.'
@@ -95,16 +95,17 @@ def connect_problem(prob, surfaces, case_settings):
     prob.model.connect('alpha', 'AS_point_0' + '.alpha')
     prob.model.connect('alpha_maneuver', 'AS_point_1' + '.alpha')
 
-    # Here we add the fuel volume constraint componenet to the model
-    prob.model.add_subsystem('fuel_vol_delta', WingboxFuelVolDelta(surface=surface))
-    prob.model.connect('wing.struct_setup.fuel_vols', 'fuel_vol_delta.fuel_vols')
-    prob.model.connect('AS_point_0.fuelburn', 'fuel_vol_delta.fuelburn')
+    if case_settings['distributed_fuel_weight']:
+        # Here we add the fuel volume constraint componenet to the model
+        prob.model.add_subsystem('fuel_vol_delta', WingboxFuelVolDelta(surface=surface))
+        prob.model.connect('wing.struct_setup.fuel_vols', 'fuel_vol_delta.fuel_vols')
+        prob.model.connect('AS_point_0.fuelburn', 'fuel_vol_delta.fuelburn')
 
-    prob.model.connect('wing.struct_setup.fuel_vols', 'AS_point_0.coupled.wing.struct_states.fuel_vols')
-    prob.model.connect('wing.struct_setup.fuel_vols', 'AS_point_1.coupled.wing.struct_states.fuel_vols')
+        prob.model.connect('wing.struct_setup.fuel_vols', 'AS_point_0.coupled.wing.struct_states.fuel_vols')
+        prob.model.connect('wing.struct_setup.fuel_vols', 'AS_point_1.coupled.wing.struct_states.fuel_vols')
 
-    prob.model.connect('fuel_mass', 'AS_point_0.coupled.wing.struct_states.fuel_mass')
-    prob.model.connect('fuel_mass', 'AS_point_1.coupled.wing.struct_states.fuel_mass')
+        prob.model.connect('fuel_mass', 'AS_point_0.coupled.wing.struct_states.fuel_mass')
+        prob.model.connect('fuel_mass', 'AS_point_1.coupled.wing.struct_states.fuel_mass')
 
     comp = ExecComp('fuel_diff = (fuel_mass - fuelburn) / fuelburn', units='kg')
     prob.model.add_subsystem('fuel_diff', comp,

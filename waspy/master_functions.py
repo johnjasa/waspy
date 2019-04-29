@@ -18,7 +18,7 @@ def setup_and_run_problem(case_settings):
 
     prob = add_driver(prob, case_settings)
 
-    prob = add_opt_problem(prob)
+    prob = add_opt_problem(prob, case_settings)
 
     run_problem(prob)
 
