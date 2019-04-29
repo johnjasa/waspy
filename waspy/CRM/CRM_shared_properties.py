@@ -71,6 +71,8 @@ def get_surfaces(case_settings):
                 'c_max_t' : .38,       # chordwise location of maximum thickness
                 't_over_c_cp' : np.array([0.08, 0.08, 0.08, 0.10, 0.10, 0.08]),
 
+
+
                 # Structural values are based on aluminum 7075
                 'E' : 73.1e9,              # [Pa] Young's modulus
                 'G' : (73.1e9/2/1.33),     # [Pa] shear modulus (calculated using E and the Poisson's ratio here)
@@ -91,6 +93,11 @@ def get_surfaces(case_settings):
 
     if case_settings['engine_mass'] or case_settings['engine_thrust']:
         surf_dict['n_point_masses'] = 1
+
+    if case_settings['planform_opt']:
+        # surf_dict['chord_cp'] = np.array([3., 4., 5., 6., 7., 10.])
+        surf_dict['span'] = 58.6
+        surf_dict['sweep'] = 0.
 
     surfaces = [surf_dict]
 
@@ -153,6 +160,14 @@ def add_opt_problem(prob, case_settings):
     prob.model.add_design_var('wing.geometry.t_over_c_cp', lower=0.07, upper=0.2, scaler=10.)
     prob.model.add_design_var('fuel_mass', lower=0., upper=2e5, scaler=1e-5)
     prob.model.add_design_var('alpha_maneuver', lower=-15., upper=15)
+
+    if case_settings['planform_opt']:
+        prob.model.add_design_var('wing.geometry.span', lower=50., upper=80., scaler=1.)
+        prob.model.add_design_var('wing.sweep', lower=-20., upper=20., scaler=1.)
+        # prob.model.add_design_var('wing.geometry.chord_cp', lower=5., upper=20.)
+        # need area constraint
+        S_ref = 414.8
+        prob.model.add_constraint('AS_point_0.coupled.wing.S_ref', equals=S_ref)
 
     prob.model.add_constraint('AS_point_0.CL', equals=0.5)
     prob.model.add_constraint('AS_point_1.L_equals_W', equals=0.)

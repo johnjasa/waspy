@@ -7,6 +7,7 @@ from waspy.master_functions import setup_and_run_problem
 # will parse these and set up the model correctly.
 case_settings = {
     'planform' : 'CRM',
+    'planform_opt' : False,
     'with_viscous' : True,
     'with_wave' : False,
     'compressibility' : False,

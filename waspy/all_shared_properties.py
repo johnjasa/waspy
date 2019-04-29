@@ -167,6 +167,8 @@ def add_driver(prob, case_settings):
 
 def run_problem(prob):
 
+    prob.driver.options['debug_print'] = ['desvars', 'nl_cons', 'objs']
+
     # Set up the problem
     prob.setup()
 
