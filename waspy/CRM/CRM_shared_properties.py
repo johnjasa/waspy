@@ -22,8 +22,8 @@ def get_surfaces(case_settings):
     lower_y = np.array([-0.0447, -0.046, -0.0473, -0.0485, -0.0496, -0.0506, -0.0515, -0.0524, -0.0532, -0.054, -0.0547, -0.0554, -0.056, -0.0565, -0.057, -0.0575, -0.0579, -0.0583, -0.0586, -0.0589, -0.0592, -0.0594, -0.0595, -0.0596, -0.0597, -0.0598, -0.0598, -0.0598, -0.0598, -0.0597, -0.0596, -0.0594, -0.0592, -0.0589, -0.0586, -0.0582, -0.0578, -0.0573, -0.0567, -0.0561, -0.0554, -0.0546, -0.0538, -0.0529, -0.0519, -0.0509, -0.0497, -0.0485, -0.0472, -0.0458, -0.0444], dtype = 'complex128')
 
     # Create a dictionary to store options about the surface
-    mesh_dict = {'num_y' : 51,
-                 'num_x' : 7,
+    mesh_dict = {'num_y' : 31,
+                 'num_x' : 3,
                  'wing_type' : 'uCRM_based',
                  'symmetry' : True,
                  'chord_cos_spacing' : 0,
@@ -116,8 +116,8 @@ def add_prob_vars(case_settings, surfaces):
     indep_var_comp.add_output('empty_cg', val=np.zeros((3)), units='m')
     indep_var_comp.add_output('fuel_mass', val=10000., units='kg')
 
-    if case_settings['engine_mass']:  # TODO: need to change 10e3 to 7.5e3 to match the point_mass below, currently comparing to older OAS case
-        indep_var_comp.add_output('W0_without_point_masses', val=148000 + surfaces[0]['Wf_reserve'] - 10e3,  units='kg')
+    if case_settings['engine_mass']:
+        indep_var_comp.add_output('W0_without_point_masses', val=148000 + surfaces[0]['Wf_reserve'] - 7.5e3,  units='kg')
 
         prob.model.add_subsystem('W0_comp',
             ExecComp('W0 = W0_without_point_masses + sum(point_masses)', units='kg'),
@@ -144,7 +144,7 @@ def add_prob_vars(case_settings, surfaces):
 
     return prob
 
-def add_opt_problem(prob):
+def add_opt_problem(prob, case_settings):
     prob.model.add_objective('AS_point_0.fuelburn', scaler=1e-4)
 
     prob.model.add_design_var('wing.twist_cp', lower=-15., upper=15., scaler=0.1)
@@ -158,7 +158,9 @@ def add_opt_problem(prob):
     prob.model.add_constraint('AS_point_1.L_equals_W', equals=0.)
     prob.model.add_constraint('AS_point_1.wing_perf.failure', upper=0.)
 
-    prob.model.add_constraint('fuel_vol_delta.fuel_vol_delta', lower=0.)
     prob.model.add_constraint('fuel_diff', equals=0., scaler=0.1)
+
+    if case_settings['distributed_fuel_weight']:
+        prob.model.add_constraint('fuel_vol_delta.fuel_vol_delta', lower=0.)
 
     return prob

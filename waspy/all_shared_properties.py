@@ -100,12 +100,11 @@ def connect_problem(prob, surfaces, case_settings):
     prob.model.connect('wing.struct_setup.fuel_vols', 'fuel_vol_delta.fuel_vols')
     prob.model.connect('AS_point_0.fuelburn', 'fuel_vol_delta.fuelburn')
 
-    if surface['distributed_fuel_weight']:
-        prob.model.connect('wing.struct_setup.fuel_vols', 'AS_point_0.coupled.wing.struct_states.fuel_vols')
-        prob.model.connect('fuel_mass', 'AS_point_0.coupled.wing.struct_states.fuel_mass')
+    prob.model.connect('wing.struct_setup.fuel_vols', 'AS_point_0.coupled.wing.struct_states.fuel_vols')
+    prob.model.connect('wing.struct_setup.fuel_vols', 'AS_point_1.coupled.wing.struct_states.fuel_vols')
 
-        prob.model.connect('wing.struct_setup.fuel_vols', 'AS_point_1.coupled.wing.struct_states.fuel_vols')
-        prob.model.connect('fuel_mass', 'AS_point_1.coupled.wing.struct_states.fuel_mass')
+    prob.model.connect('fuel_mass', 'AS_point_0.coupled.wing.struct_states.fuel_mass')
+    prob.model.connect('fuel_mass', 'AS_point_1.coupled.wing.struct_states.fuel_mass')
 
     comp = ExecComp('fuel_diff = (fuel_mass - fuelburn) / fuelburn', units='kg')
     prob.model.add_subsystem('fuel_diff', comp,
@@ -119,9 +118,10 @@ def add_driver(prob, case_settings):
     from openmdao.api import pyOptSparseDriver
     prob.driver = pyOptSparseDriver()
     prob.driver.options['optimizer'] = "SNOPT"
-    prob.driver.opt_settings['Major optimality tolerance'] = 1e-8
-    prob.driver.opt_settings['Major feasibility tolerance'] = 1e-8
+    prob.driver.opt_settings['Major optimality tolerance'] = 1e-6
+    prob.driver.opt_settings['Major feasibility tolerance'] = 1e-6
     prob.driver.opt_settings['Major iterations limit'] = 200
+    prob.driver.opt_settings['Verify level'] = -1
 
     recorder = SqliteRecorder("aerostruct.db")
     prob.driver.add_recorder(recorder)
@@ -165,6 +165,7 @@ def add_driver(prob, case_settings):
     return prob
 
 def run_problem(prob):
+
     # Set up the problem
     prob.setup()
 
