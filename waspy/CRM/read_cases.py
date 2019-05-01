@@ -321,7 +321,7 @@ def read_db(db_name):
 
     return output_dict
 
-folders=['baseline', 'viscous', 'wave_drag', 'struct_weight', 'fuel_weight', 'engine_mass', 'engine_thrust']
+folders = ['baseline', 'viscous', 'wave_drag', 'struct_weight', 'fuel_weight', 'engine_mass', 'engine_thrust']
 
 def load_all_cases():
     # Loop through all the runs and load their DBs into the data dict

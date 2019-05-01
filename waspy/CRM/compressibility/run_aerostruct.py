@@ -11,10 +11,10 @@ case_settings = {
     'with_viscous' : True,
     'with_wave' : True,
     'compressibility' : False,
-    'struct_weight_relief' : False,
-    'distributed_fuel_weight' : False,
-    'engine_mass' : False,
-    'engine_thrust' : False,
+    'struct_weight_relief' : True,
+    'distributed_fuel_weight' : True,
+    'engine_mass' : True,
+    'engine_thrust' : True,
     }
 
 setup_and_run_problem(case_settings)

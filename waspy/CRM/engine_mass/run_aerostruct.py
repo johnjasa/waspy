@@ -13,8 +13,8 @@ case_settings = {
     'compressibility' : False,
     'struct_weight_relief' : True,
     'distributed_fuel_weight' : True,
-    'engine_mass' : True,
-    'engine_thrust' : False,
+    'engine_mass' : False,
+    'engine_thrust' : True,
     }
 
 setup_and_run_problem(case_settings)

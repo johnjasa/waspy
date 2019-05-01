@@ -14,7 +14,7 @@ case_settings = {
     'struct_weight_relief' : True,
     'distributed_fuel_weight' : True,
     'engine_mass' : True,
-    'engine_thrust' : True,
+    'engine_thrust' : False,
     }
 
 setup_and_run_problem(case_settings)

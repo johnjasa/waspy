@@ -32,7 +32,7 @@ def connect_problem(prob, surfaces, case_settings):
         # Connect the parameters within the model for each aerostruct point
 
         # Create the aero point group and add it to the model
-        AS_point = AerostructPoint(surfaces=surfaces, internally_connect_fuelburn=False)
+        AS_point = AerostructPoint(surfaces=surfaces, internally_connect_fuelburn=False, compressible=case_settings['compressibility'])
 
         prob.model.add_subsystem(point_name, AS_point)
 
@@ -122,8 +122,9 @@ def add_driver(prob, case_settings):
     prob.driver.opt_settings['Major optimality tolerance'] = 1e-6
     prob.driver.opt_settings['Major feasibility tolerance'] = 1e-6
     prob.driver.opt_settings['Major iterations limit'] = 200
-    prob.driver.opt_settings['Verify level'] = -1
-    prob.driver.opt_settings['Nonderivative linesearch'] = None
+    # prob.driver.opt_settings['Verify level'] = -1
+    # prob.driver.opt_settings['Nonderivative linesearch'] = None
+    # prob.driver.opt_settings['Hessian frequency'] = 10
 
     recorder = SqliteRecorder("aerostruct.db")
     prob.driver.add_recorder(recorder)
@@ -190,8 +191,25 @@ def run_problem(prob):
 
     prob.driver.options['debug_print'] = ['desvars', 'nl_cons', 'objs']
 
+    # prob.model.approx_totals(method='fd')
+
     # Set up the problem
     prob.setup()
+
+    # from numpy import array
+    # DVs = {'prob_vars.alpha_maneuver': array([ 2.0]),
+    #  'prob_vars.fuel_mass': array([ 92.e3]),
+    #  'wing.geometry.indep_vars.t_over_c_cp': array([ 0.07      ,  0.0783483 ,  0.08419704,  0.1265987 ,  0.09524181,
+    #         0.0802236 ]),
+    #  'wing.geometry.indep_vars.twist_cp': array([ 3.90420582,  6.2615013 ,  6.07554922,  7.74455319,  3.14418505,
+    #         9.26085392]),
+    #  'wing.wingbox_group.indep_vars.skin_thickness_cp': array([ 0.003     ,  0.003     ,  0.01411087,  0.02455418,  0.01556619,
+    #         0.02349208]),
+    #  'wing.wingbox_group.indep_vars.spar_thickness_cp': array([ 0.003     ,  0.003     ,  0.01243681,  0.00319055,  0.00465088,
+    #         0.00455171])}
+    #
+    # for DV in DVs.keys():
+    #     prob[DV] = DVs[DV]
 
     from openmdao.api import view_model
     view_model(prob, show_browser=False)
