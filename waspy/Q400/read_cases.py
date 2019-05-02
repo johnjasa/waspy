@@ -426,7 +426,7 @@ def plot_lifts(data, cases):
 
 import pickle
 
-read_OM_db = False
+read_OM_db = True
 
 if read_OM_db:
     data = load_all_cases()
@@ -437,5 +437,5 @@ else:
         data = pickle.load(f)
 
 print_results(data)
-# plot_thicknesses(data, folders)
+plot_thicknesses(data, folders)
 plot_lifts(data, folders)

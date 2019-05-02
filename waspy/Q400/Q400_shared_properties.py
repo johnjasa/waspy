@@ -6,6 +6,7 @@ from openaerostruct.integration.aerostruct_groups import AerostructGeometry, Aer
 from openmdao.api import IndepVarComp, Problem, ScipyOptimizeDriver, SqliteRecorder, ExecComp, SqliteRecorder
 from openaerostruct.structures.wingbox_fuel_vol_delta import WingboxFuelVolDelta
 from openaerostruct.utils.constants import grav_constant
+from openaerostruct.geometry.utils import add_chordwise_panels
 
 
 def get_surfaces(case_settings):
@@ -27,8 +28,8 @@ def get_surfaces(case_settings):
     span = 28.42                    # wing span in m
     root_chord = 3.34               # root chord in m
 
-    nx = 3  # number of chordwise nodal points (should be odd)
-    ny = 21  # number of spanwise nodal points for the half-span
+    nx = 5  # number of chordwise nodal points (should be odd)
+    ny = 31  # number of spanwise nodal points for the half-span
 
     # Initialize the 3-D mesh object. Chordwise, spanwise, then the 3D coordinates.
     mesh = np.zeros((nx, ny, 3))
@@ -44,10 +45,11 @@ def get_surfaces(case_settings):
 
     mesh[:, :, 1] = np.linspace(-span/2, 0, ny)
     mesh[0, :, 0] = 0.34 * root_chord * np.linspace(1.0, 0., ny)
-    mesh[2, :, 0] = root_chord * (np.linspace(0.4, 1.0, ny) + 0.34 * np.linspace(1.0, 0., ny))
-    mesh[1, :, 0] = ( mesh[2, :, 0] + mesh[0, :, 0] ) / 2
+    mesh[-1, :, 0] = root_chord * (np.linspace(0.4, 1.0, ny) + 0.34 * np.linspace(1.0, 0., ny))
+    mesh[1, :, 0] = ( mesh[-1, :, 0] + mesh[0, :, 0] ) / 2
 
-    print(mesh)
+    chord_cos_spacing = 0.
+    mesh = add_chordwise_panels(mesh, nx, chord_cos_spacing)
 
     surf_dict = {
                 # Wing definition
@@ -137,22 +139,23 @@ def add_prob_vars(case_settings, surfaces):
     indep_var_comp.add_output('empty_cg', val=np.zeros((3)), units='m')
     indep_var_comp.add_output('fuel_mass', val=3000., units='kg')
 
+    # https://www.air-tecm.com/fleet/bombardier-dash-8-aircraft/
     if case_settings['engine_mass'] or case_settings['engine_thrust']:
-        point_mass_locations = np.array([[0.2,   -5.,   -0.5]])
+        point_mass_locations = np.array([[0.2,   -3.94,   -0.5]])
         indep_var_comp.add_output('point_mass_locations', val=point_mass_locations, units='m')
 
     if case_settings['engine_thrust']:
-        engine_thrusts = np.array([[80.e3]])
+        engine_thrusts = np.array([[8.e3]])
         indep_var_comp.add_output('engine_thrusts', val=engine_thrusts, units='N')
 
     if case_settings['engine_mass']:
-        indep_var_comp.add_output('W0_without_point_masses', val=25400 + surfaces[0]['Wf_reserve'] - 900.,  units='kg')
+        indep_var_comp.add_output('W0_without_point_masses', val=25400 + surfaces[0]['Wf_reserve'] - 1050.,  units='kg')
 
         prob.model.add_subsystem('W0_comp',
             ExecComp('W0 = W0_without_point_masses + sum(point_masses)', units='kg'),
             promotes=['*'])
 
-        point_masses = np.array([[900.]])
+        point_masses = np.array([[1050.]])
         indep_var_comp.add_output('point_masses', val=point_masses, units='kg')
 
     else:
