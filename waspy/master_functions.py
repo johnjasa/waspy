@@ -8,6 +8,9 @@ def setup_and_run_problem(case_settings):
     if case_settings['planform'] == 'CRM':
         from waspy.CRM.CRM_shared_properties import add_prob_vars, add_opt_problem, get_surfaces
 
+    if case_settings['planform'] == 'Q400':
+        from waspy.Q400.Q400_shared_properties import add_prob_vars, add_opt_problem, get_surfaces
+
     surfaces = get_surfaces(case_settings)
 
     prob = add_prob_vars(case_settings, surfaces)
