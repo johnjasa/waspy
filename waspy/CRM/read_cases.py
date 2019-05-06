@@ -1,6 +1,6 @@
 from __future__ import division, print_function
 import pickle
-from waspy.all_read_cases import load_all_cases, print_results, plot_thicknesses, plot_lifts, plot_tc, plot_twist, folders
+from waspy.all_read_cases import load_all_cases, print_results, plot_thicknesses, plot_lifts, plot_tc, plot_twist, folders, print_relative_results
 
 
 read_OM_db = False
@@ -64,3 +64,5 @@ twist_labels = {
 }
 
 plot_twist(data, folders, live_plot=False, annotate_data=twist_labels)
+
+print_relative_results(data)
