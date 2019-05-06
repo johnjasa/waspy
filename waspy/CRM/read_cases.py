@@ -1,6 +1,6 @@
 from __future__ import division, print_function
 import pickle
-from waspy.all_read_cases import load_all_cases, print_results, plot_thicknesses, plot_lifts, folders
+from waspy.all_read_cases import load_all_cases, print_results, plot_thicknesses, plot_lifts, plot_tc, plot_twist, folders
 
 
 read_OM_db = False
@@ -40,3 +40,27 @@ lift_labels = {
 }
 
 plot_lifts(data, folders, live_plot=False, annotate_data=lift_labels)
+
+tc_labels = {
+    'baseline' : (0.8, 0.12),
+    'viscous' : (0.0576, 0.16),
+    'wave_drag' : (0.0576, 0.12),
+    'struct_weight' : (0.17, 0.1233),
+    'fuel_weight' : (0.55, 0.126),
+    'engine_mass' : (0.8, 0.12),
+    'engine_thrust' : (0.8, 0.12),
+}
+
+plot_tc(data, folders, live_plot=False, annotate_data=tc_labels)
+
+twist_labels = {
+    'baseline' : (0.8, 4.),
+    'viscous' : (0.0576, 4.),
+    'wave_drag' : (0.0576, 4.),
+    'struct_weight' : (0.17, 4.3),
+    'fuel_weight' : (0.55, 4.),
+    'engine_mass' : (0.8, 4.),
+    'engine_thrust' : (0.8, 4.),
+}
+
+plot_twist(data, folders, live_plot=False, annotate_data=twist_labels)

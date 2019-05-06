@@ -472,3 +472,72 @@ def plot_lifts(data, cases, live_plot=True, annotate_data={}):
     else:
         # plt.tight_layout()
         plt.savefig('lifts.pdf')
+
+
+def plot_tc(data, cases, live_plot=True, annotate_data={}):
+    plt.figure()
+
+    for idx, case in enumerate(cases):
+        case_data = data[case]
+
+        mesh = case_data['mesh'][-1]
+        t_over_c = case_data['t_over_c'][-1][0]
+
+        span, t_over_c = get_flat_data(mesh, t_over_c)
+
+        if idx > 0:
+            label = 'No ' + case_keys[case]
+            plt.plot(span, t_over_c, label=label, color=colors[idx])
+        else:
+            label = case_keys[case]
+            plt.plot(span, t_over_c, label=label, color='k')
+
+        if not live_plot:
+            plt.annotate(label, annotate_data[case], color=colors[idx])
+
+    if live_plot:
+        niceplots.draggable_legend()
+    niceplots.adjust_spines()
+
+    plt.xlabel('Normalized span')
+    plt.ylabel('Thickness-to-chord ratio')
+
+    if live_plot:
+        plt.show()
+    else:
+        # plt.tight_layout()
+        plt.savefig('tc.pdf')
+
+def plot_twist(data, cases, live_plot=True, annotate_data={}):
+    plt.figure()
+
+    for idx, case in enumerate(cases):
+        case_data = data[case]
+
+        mesh = case_data['mesh'][-1]
+        twist = case_data['twist'][-1][0]
+
+        span = compute_span(mesh)
+
+        if idx > 0:
+            label = 'No ' + case_keys[case]
+            plt.plot(span, twist, label=label, color=colors[idx])
+        else:
+            label = case_keys[case]
+            plt.plot(span, twist, label=label, color='k')
+
+        if not live_plot:
+            plt.annotate(label, annotate_data[case], color=colors[idx])
+
+    if live_plot:
+        niceplots.draggable_legend()
+    niceplots.adjust_spines()
+
+    plt.xlabel('Normalized span')
+    plt.ylabel('Twist (degrees)')
+
+    if live_plot:
+        plt.show()
+    else:
+        # plt.tight_layout()
+        plt.savefig('twists.pdf')
