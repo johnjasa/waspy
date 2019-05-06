@@ -437,5 +437,5 @@ else:
         data = pickle.load(f)
 
 print_results(data)
-# plot_thicknesses(data, folders)
+plot_thicknesses(data, folders)
 plot_lifts(data, folders)

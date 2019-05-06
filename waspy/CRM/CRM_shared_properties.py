@@ -40,7 +40,7 @@ def get_surfaces(case_settings):
                 'S_ref_type' : 'wetted', # how we compute the wing area,
                                          # can be 'wetted' or 'projected'
                 'mesh' : mesh,
-                'twist_cp' : np.array([4., 5., 8., 8., 8., 9.]),
+                'twist_cp' : np.array([4., 5., 8., 8.]),
 
                 'fem_model_type' : 'wingbox',
                 'data_x_upper' : upper_x,
@@ -48,8 +48,8 @@ def get_surfaces(case_settings):
                 'data_y_upper' : upper_y,
                 'data_y_lower' : lower_y,
 
-                'spar_thickness_cp' : np.array([0.004, 0.005, 0.005, 0.008, 0.008, 0.01]), # [m]
-                'skin_thickness_cp' : np.array([0.005, 0.01, 0.015, 0.020, 0.025, 0.026]),
+                'spar_thickness_cp' : np.array([0.004, 0.005, 0.005, 0.008]), # [m]
+                'skin_thickness_cp' : np.array([0.005, 0.01, 0.015, 0.020]),
 
                 'original_wingbox_airfoil_t_over_c' : 0.12,
 
@@ -69,7 +69,7 @@ def get_surfaces(case_settings):
                 'k_lam' : 0.05,         # percentage of chord with laminar
                                         # flow, used for viscous drag
                 'c_max_t' : .38,       # chordwise location of maximum thickness
-                't_over_c_cp' : np.array([0.08, 0.08, 0.08, 0.10, 0.10, 0.08]),
+                't_over_c_cp' : np.array([0.08, 0.08, 0.08, 0.10]),
 
                 # Structural values are based on aluminum 7075
                 'E' : 73.1e9,              # [Pa] Young's modulus
@@ -138,7 +138,7 @@ def add_prob_vars(case_settings, surfaces):
 
         point_masses = np.array([[7.5e3]])
         indep_var_comp.add_output('point_masses', val=point_masses, units='kg')
-        
+
     else:
         indep_var_comp.add_output('W0', val=148000 + surfaces[0]['Wf_reserve'], units='kg')
 
@@ -158,6 +158,7 @@ def add_opt_problem(prob, case_settings):
     prob.model.add_design_var('fuel_mass', lower=0., upper=2e5, scaler=1e-5)
     prob.model.add_design_var('alpha_maneuver', lower=-15., upper=15)
 
+    # Don't actually do planform opt please, these values are wrong
     if case_settings['planform_opt']:
         prob.model.add_design_var('wing.geometry.span', lower=50., upper=80., scaler=1.)
         prob.model.add_design_var('wing.sweep', lower=-20., upper=20., scaler=1.)
