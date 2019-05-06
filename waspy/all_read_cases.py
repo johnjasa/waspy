@@ -329,6 +329,22 @@ def read_db(db_name):
 
 folders = ['baseline', 'viscous', 'wave_drag', 'struct_weight', 'fuel_weight', 'engine_mass', 'engine_thrust']
 
+case_keys = {
+    'baseline' : 'Baseline',
+    'viscous' : 'viscous drag',
+    'wave_drag' : 'wave drag',
+    'struct_weight' : 'struct weight',
+    'fuel_weight' : 'fuel weight',
+    'engine_mass' : 'engine mass',
+    'engine_thrust' : 'engine thrust',
+}
+
+import seaborn as sns
+pal = sns.color_palette('muted')
+some_colors = pal.as_hex()
+
+colors = ['k'] + some_colors
+
 def load_all_cases():
     # Loop through all the runs and load their DBs into the data dict
 
@@ -383,7 +399,9 @@ def get_flat_data(mesh, y_data):
 
     return span, flat_y_data
 
-def plot_thicknesses(data, cases):
+def plot_thicknesses(data, cases, live_plot=True, annotate_data={}):
+    plt.figure()
+
     for idx, case in enumerate(cases):
         case_data = data[case]
 
@@ -393,19 +411,31 @@ def plot_thicknesses(data, cases):
         span, skin_thickness = get_flat_data(mesh, skin_thickness)
 
         if idx > 0:
-            label = 'no ' + case
-            plt.plot(span, skin_thickness, label=label)
+            label = 'No ' + case_keys[case]
+            plt.plot(span, skin_thickness, label=label, color=colors[idx])
         else:
-            plt.plot(span, skin_thickness, label=case, color='k')
+            label = case_keys[case]
+            plt.plot(span, skin_thickness, label=label, color='k')
 
-    niceplots.draggable_legend()
+        if not live_plot:
+            plt.annotate(label, annotate_data[case], color=colors[idx])
+
+    if live_plot:
+        niceplots.draggable_legend()
     niceplots.adjust_spines()
 
     plt.xlabel('Normalized span')
     plt.ylabel('Skin thickness')
-    plt.show()
 
-def plot_lifts(data, cases):
+    if live_plot:
+        plt.show()
+    else:
+        # plt.tight_layout()
+        plt.savefig('thicknesses.pdf')
+
+def plot_lifts(data, cases, live_plot=True, annotate_data={}):
+    plt.figure()
+
     for idx, case in enumerate(cases):
         case_data = data[case]
 
@@ -417,15 +447,28 @@ def plot_lifts(data, cases):
         span = (span[1:] + span[:-1]) / 2
 
         if idx > 0:
-            label = 'no ' + case
-            plt.plot(span, lift, label=label)
+            label = 'No ' + case_keys[case]
+            plt.plot(span, lift, label=label, color=colors[idx])
         else:
-            plt.plot(span, lift, label=case, color='k')
-            plt.plot(case_data['lift_ell_span'][-1], case_data['lift_ell'][-1], '--', color='gray', label='elliptical')
+            label = case_keys[case]
+            plt.plot(span, lift, label=label, color='k')
+            plt.plot(case_data['lift_ell_span'][-1], case_data['lift_ell'][-1], '--', color='gray', label='Elliptical')
 
-    niceplots.draggable_legend()
+        if not live_plot:
+            plt.annotate(label, annotate_data[case], color=colors[idx])
+            if idx == 0:
+                plt.annotate('Elliptical', annotate_data['elliptical'], color='gray')
+
+
+    if live_plot:
+        niceplots.draggable_legend()
     niceplots.adjust_spines()
 
     plt.xlabel('Normalized span')
     plt.ylabel('Lift distribution')
-    plt.show()
+
+    if live_plot:
+        plt.show()
+    else:
+        # plt.tight_layout()
+        plt.savefig('lifts.pdf')
