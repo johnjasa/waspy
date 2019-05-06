@@ -28,8 +28,8 @@ def get_surfaces(case_settings):
     span = 28.42                    # wing span in m
     root_chord = 3.34               # root chord in m
 
-    nx = 7  # number of chordwise nodal points (should be odd)
     ny = 26  # number of spanwise nodal points for the half-span
+    nx = 5  # number of chordwise nodal points (should be odd)
 
     # Initialize the 3-D mesh object. Chordwise, spanwise, then the 3D coordinates.
     mesh = np.zeros((nx, ny, 3))
