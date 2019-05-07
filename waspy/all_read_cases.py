@@ -364,38 +364,14 @@ def print_results(data):
 
     len_header = max_name_len+3+7*13
     print("-"*len_header)
-    print("                            Optimized wing properties")
-    print("-"*len_header)
-
-    max_name_len = str(max_name_len)
-    line_tmpl = '{:<'+max_name_len+'}|  '+'{:>13}'*4
-    print(line_tmpl.format('Case', 'struct mass (kg)', 'fuel burn (kg)', 'drag counts', 'TOGW (kg)'))
-
-    line_tmpl = '{:<'+max_name_len+'} &  '+'{:13.1f} & '*3 + '{:13.1f} \\\\'
-    for folder in folders:
-        struct_mass = data[folder]['struct_masses'][-1][0]
-        fuelburn = data[folder]['obj'][-1][0]
-        CD = data[folder]['CD'][-1][0] * 10e3
-        TOGW = data[folder]['total_weight'][-1][0] / 9.81
-
-        case = case_keys[folder].capitalize()
-
-        print(line_tmpl.format(case, struct_mass, fuelburn, CD, TOGW))
-
-def print_relative_results(data):
-    # get max name length:
-    max_name_len = max([len(folder) for folder in folders])+2
-
-    len_header = max_name_len+3+7*13
-    print("-"*len_header)
     print("                            Relative to baseline ptimized wing properties")
     print("-"*len_header)
 
     max_name_len = str(max_name_len)
-    line_tmpl = '{:<'+max_name_len+'}|  '+'{:>13}'*4
-    print(line_tmpl.format('Case', 'struct mass', 'fuel burn', 'drag', 'TOGW'))
+    line_tmpl = '{:<'+max_name_len+'}|  '+'{:>10}'*8
+    print(line_tmpl.format('Case', 'fuel burn', 'rel fuel burn', 'struct mass, kg', 'rel struct mass',  'drag', 'rel drag', 'TOGW', 'rel TOGW'))
 
-    line_tmpl = '{:<'+max_name_len+'} &  '+'{:13.2f} & '*3 + '{:13.2f} \\\\'
+    line_tmpl = '{:<'+max_name_len+'} &  '+'\\num{{{:8.1f}}} & {:8.1f} & ' * 3 + '\\num{{{:8.1f}}} & {:8.1f} \\\\'
     for idx, folder in enumerate(folders):
         struct_mass = data[folder]['struct_masses'][-1][0]
         fuelburn = data[folder]['obj'][-1][0]
@@ -413,14 +389,14 @@ def print_relative_results(data):
         CD = data[folder]['CD'][-1][0] * 10e3
         TOGW = data[folder]['total_weight'][-1][0] / 9.81
 
-        del_struct_mass = (struct_mass - base_struct_mass) / struct_mass * 100.
-        del_fuelburn = (fuelburn - base_fuelburn) / fuelburn * 100.
-        del_CD = (CD - base_CD) / CD * 100.
-        del_TOGW = (TOGW - base_TOGW) / TOGW * 100.
+        del_struct_mass = (struct_mass - base_struct_mass) / base_struct_mass * 100.
+        del_fuelburn = (fuelburn - base_fuelburn) / base_fuelburn * 100.
+        del_CD = (CD - base_CD) / base_CD * 100.
+        del_TOGW = (TOGW - base_TOGW) / base_TOGW * 100.
 
         case = case_keys[folder].capitalize()
 
-        print(line_tmpl.format(case, del_struct_mass, del_fuelburn, del_CD, del_TOGW))
+        print(line_tmpl.format(case, fuelburn, del_fuelburn, struct_mass, del_struct_mass, CD, del_CD, TOGW, del_TOGW))
 
 def compute_span(mesh):
     span = (mesh[0, :, 1] / (mesh[0, -1, 1] - mesh[0, 0, 1]))
