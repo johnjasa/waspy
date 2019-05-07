@@ -52,6 +52,8 @@ def get_surfaces(case_settings):
                                          # can be 'wetted' or 'projected'
                 'mesh' : mesh,
                 'twist_cp' : np.ones((4)) * 5.,
+                'chord_cp' : chord_cp,
+                'xshear_cp' : xshear_cp,
 
                 'fem_model_type' : 'wingbox',
                 'data_x_upper' : upper_x,

@@ -335,7 +335,7 @@ case_keys = {
     'wave_drag' : 'wave drag',
     'struct_weight' : 'struct weight',
     'fuel_weight' : 'fuel weight',
-    'engine_mass' : 'engine mass',
+    'engine_mass' : 'engine weight',
     'engine_thrust' : 'engine thrust',
 }
 
@@ -355,6 +355,17 @@ def load_all_cases():
         data[folder] = read_db(filename)
 
     print(data[folder].keys())
+
+    return data
+
+def load_baselines():
+    # Loop through all the runs and load their DBs into the data dict
+
+    wings = ['CRM', 'Q400', 'tiltwing']
+    data = {}
+    for wing in wings:
+        filename = f'{wing}/baseline/aerostruct.db'
+        data[wing] = read_db(filename)
 
     return data
 
@@ -394,7 +405,10 @@ def print_results(data):
         del_CD = (CD - base_CD) / base_CD * 100.
         del_TOGW = (TOGW - base_TOGW) / base_TOGW * 100.
 
-        case = case_keys[folder].capitalize()
+        if idx > 0:
+            case = 'w/o ' + case_keys[folder]
+        else:
+            case = case_keys[folder]
 
         print(line_tmpl.format(case, fuelburn, del_fuelburn, struct_mass, del_struct_mass, CD, del_CD, TOGW, del_TOGW))
 
@@ -429,7 +443,7 @@ def plot_thicknesses(data, cases, live_plot=True, annotate_data={}):
         span, skin_thickness = get_flat_data(mesh, skin_thickness)
 
         if idx > 0:
-            label = 'No ' + case_keys[case]
+            label = 'w/o ' + case_keys[case]
             plt.plot(span, skin_thickness, label=label, color=colors[idx])
         else:
             label = case_keys[case]
@@ -465,7 +479,7 @@ def plot_lifts(data, cases, live_plot=True, annotate_data={}):
         span = (span[1:] + span[:-1]) / 2
 
         if idx > 0:
-            label = 'No ' + case_keys[case]
+            label = 'w/o ' + case_keys[case]
             plt.plot(span, lift, label=label, color=colors[idx])
         else:
             label = case_keys[case]
@@ -504,7 +518,7 @@ def plot_tc(data, cases, live_plot=True, annotate_data={}):
         span, t_over_c = get_flat_data(mesh, t_over_c)
 
         if idx > 0:
-            label = 'No ' + case_keys[case]
+            label = 'w/o ' + case_keys[case]
             plt.plot(span, t_over_c, label=label, color=colors[idx])
         else:
             label = case_keys[case]
@@ -538,7 +552,7 @@ def plot_twist(data, cases, live_plot=True, annotate_data={}):
         span = compute_span(mesh)
 
         if idx > 0:
-            label = 'No ' + case_keys[case]
+            label = 'w/o ' + case_keys[case]
             plt.plot(span, twist, label=label, color=colors[idx])
         else:
             label = case_keys[case]
