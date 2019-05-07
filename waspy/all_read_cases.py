@@ -343,7 +343,7 @@ import seaborn as sns
 pal = sns.color_palette('muted')
 some_colors = pal.as_hex()
 
-colors = ['k'] + some_colors
+colors = ['#696969'] + some_colors
 
 def load_all_cases():
     # Loop through all the runs and load their DBs into the data dict
@@ -457,7 +457,7 @@ def plot_thicknesses(data, cases, live_plot=True, annotate_data={}):
             plt.plot(span, skin_thickness, label=label, color=colors[idx])
         else:
             label = case_keys[case]
-            plt.plot(span, skin_thickness, label=label, color='k')
+            plt.plot(span, skin_thickness, label=label, color=colors[idx], zorder=100)
 
         if not live_plot:
             plt.annotate(label, annotate_data[case], color=colors[idx])
@@ -493,7 +493,7 @@ def plot_lifts(data, cases, live_plot=True, annotate_data={}):
             plt.plot(span, lift, label=label, color=colors[idx])
         else:
             label = case_keys[case]
-            plt.plot(span, lift, label=label, color='k')
+            plt.plot(span, lift, label=label, color=colors[idx], zorder=100)
             plt.plot(case_data['lift_ell_span'][-1], case_data['lift_ell'][-1], '--', color='gray', label='Elliptical')
 
         if not live_plot:
@@ -532,7 +532,7 @@ def plot_tc(data, cases, live_plot=True, annotate_data={}):
             plt.plot(span, t_over_c, label=label, color=colors[idx])
         else:
             label = case_keys[case]
-            plt.plot(span, t_over_c, label=label, color='k')
+            plt.plot(span, t_over_c, label=label, color=colors[idx], zorder=100)
 
         if not live_plot:
             plt.annotate(label, annotate_data[case], color=colors[idx])
@@ -566,7 +566,7 @@ def plot_twist(data, cases, live_plot=True, annotate_data={}):
             plt.plot(span, twist, label=label, color=colors[idx])
         else:
             label = case_keys[case]
-            plt.plot(span, twist, label=label, color='k')
+            plt.plot(span, twist, label=label, color=colors[idx], zorder=100)
 
         if not live_plot:
             plt.annotate(label, annotate_data[case], color=colors[idx])
