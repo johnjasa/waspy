@@ -42,25 +42,28 @@ lift_labels = {
 plot_lifts(data, folders, live_plot=False, annotate_data=lift_labels)
 
 tc_labels = {
-    'baseline' : (0.8, 0.12),
-    'viscous' : (0.0576, 0.16),
-    'wave_drag' : (0.0576, 0.12),
-    'struct_weight' : (0.17, 0.1233),
-    'fuel_weight' : (0.55, 0.126),
-    'engine_mass' : (0.8, 0.12),
-    'engine_thrust' : (0.8, 0.12),
+    'viscous' : (0.4, 0.183),
+    'fuel_weight' : (0.1, 0.13),
+    'engine_thrust' : (0.1, 0.125),
+    'struct_weight' : (0.1, 0.12),
+    'wave_drag' : (0.1, 0.115),
+    'engine_mass' : (0.1, 0.11),
+    'baseline' : (0.1, 0.105),
 }
 
 plot_tc(data, folders, live_plot=False, annotate_data=tc_labels)
 
+anchor = 5
+x_anchor = 0.3
+spacing = 0.2
 twist_labels = {
-    'baseline' : (0.8, 4.),
-    'viscous' : (0.0576, 4.),
-    'wave_drag' : (0.0576, 4.),
-    'struct_weight' : (0.17, 4.3),
-    'fuel_weight' : (0.55, 4.),
-    'engine_mass' : (0.8, 4.),
-    'engine_thrust' : (0.8, 4.),
+    'baseline' : (x_anchor, anchor + spacing),
+    'viscous' : (x_anchor, anchor - 5 * spacing),
+    'wave_drag' : (x_anchor, anchor - 4 * spacing),
+    'struct_weight' : (x_anchor, anchor + 0),
+    'fuel_weight' : (x_anchor, anchor - 3 * spacing),
+    'engine_mass' : (x_anchor, anchor - 2 * spacing),
+    'engine_thrust' : (x_anchor, anchor - spacing),
 }
 
 plot_twist(data, folders, live_plot=False, annotate_data=twist_labels)
