@@ -27,7 +27,7 @@ def get_surfaces(case_settings):
                  'wing_type' : 'uCRM_based',
                  'symmetry' : True,
                  'chord_cos_spacing' : 0,
-                 'span_cos_spacing' : 0,
+                 'span_cos_spacing' : 0.5,
                  'num_twist_cp' : 6,
                  }
 
@@ -40,7 +40,7 @@ def get_surfaces(case_settings):
                 'S_ref_type' : 'wetted', # how we compute the wing area,
                                          # can be 'wetted' or 'projected'
                 'mesh' : mesh,
-                'twist_cp' : np.array([4., 5., 8., 8.]),
+                'twist_cp' : np.array([4., 5., 8., 8., 8., 8.]),
 
                 'fem_model_type' : 'wingbox',
                 'data_x_upper' : upper_x,
@@ -48,8 +48,8 @@ def get_surfaces(case_settings):
                 'data_y_upper' : upper_y,
                 'data_y_lower' : lower_y,
 
-                'spar_thickness_cp' : np.array([0.004, 0.005, 0.005, 0.008]), # [m]
-                'skin_thickness_cp' : np.array([0.005, 0.01, 0.015, 0.020]),
+                'spar_thickness_cp' : np.array([0.004, 0.005, 0.005, 0.008, 0.008, 0.008]), # [m]
+                'skin_thickness_cp' : np.array([0.005, 0.01, 0.015, 0.020, 0.02, 0.02]),
 
                 'original_wingbox_airfoil_t_over_c' : 0.12,
 
@@ -69,11 +69,11 @@ def get_surfaces(case_settings):
                 'k_lam' : 0.05,         # percentage of chord with laminar
                                         # flow, used for viscous drag
                 'c_max_t' : .38,       # chordwise location of maximum thickness
-                't_over_c_cp' : np.array([0.08, 0.08, 0.08, 0.10]),
+                't_over_c_cp' : np.array([0.08, 0.08, 0.08, 0.10, 0.10, 0.10]),
 
                 # Structural values are based on aluminum 7075
                 'E' : 73.1e9,              # [Pa] Young's modulus
-                'G' : (73.1e9/2/1.33),     # [Pa] shear modulus (calculated using E and the Poisson's ratio here)
+                'G' : (73.1e9/2/1.30),     # [Pa] shear modulus (calculated using E and the Poisson's ratio here)
                 'yield' : (420.e6 / 1.5),  # [Pa] allowable yield stress
                 'mrho' : 2.78e3,           # [kg/m^3] material density
                 'strength_factor_for_upper_skin' : 1.0, # the yield stress is multiplied by this factor for the upper skin
@@ -94,7 +94,7 @@ def get_surfaces(case_settings):
 
     if case_settings['planform_opt']:
         # surf_dict['chord_cp'] = np.array([3., 4., 5., 6., 7., 10.])
-        surf_dict['span'] = 58.6
+        surf_dict['span'] = 58.9
         surf_dict['sweep'] = 0.
 
     surfaces = [surf_dict]

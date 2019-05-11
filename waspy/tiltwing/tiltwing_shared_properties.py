@@ -51,7 +51,7 @@ def get_surfaces(case_settings):
                 'S_ref_type' : 'wetted', # how we compute the wing area,
                                          # can be 'wetted' or 'projected'
                 'mesh' : mesh,
-                'twist_cp' : np.ones((4)) * 5.,
+                'twist_cp' : np.ones((6)) * 5.,
                 'chord_cp' : chord_cp,
                 'xshear_cp' : xshear_cp,
 
@@ -61,8 +61,8 @@ def get_surfaces(case_settings):
                 'data_y_upper' : upper_y,
                 'data_y_lower' : lower_y,
 
-                'spar_thickness_cp' : np.ones((4)) * 0.002, # [m]
-                'skin_thickness_cp' : np.ones((4)) * 0.002, # [m]
+                'spar_thickness_cp' : np.ones((6)) * 0.002, # [m]
+                'skin_thickness_cp' : np.ones((6)) * 0.002, # [m]
 
                 'original_wingbox_airfoil_t_over_c' : 0.15,
 
@@ -81,12 +81,12 @@ def get_surfaces(case_settings):
                 # Airfoil properties for viscous drag calculation
                 'k_lam' : 0.05,         # percentage of chord with laminar
                                         # flow, used for viscous drag
-                'c_max_t' : .38,        # chordwise location of maximum thickness
-                't_over_c_cp' : np.array([0.1, 0.1, 0.15, 0.15]),
+                'c_max_t' : .30,        # chordwise location of maximum thickness
+                't_over_c_cp' : np.array([0.1, 0.1, 0.15, 0.15, 0.15, 0.15]),
 
                 # Structural values are based on aluminum 7075
                 'E' : 73.1e9,              # [Pa] Young's modulus
-                'G' : (73.1e9/2/1.33),     # [Pa] shear modulus (calculated using E and the Poisson's ratio here)
+                'G' : (73.1e9/2/1.30),     # [Pa] shear modulus (calculated using E and the Poisson's ratio here)
                 'yield' : (420.e6 / 1.5),  # [Pa] allowable yield stress
                 'mrho' : 2.78e3,           # [kg/m^3] material density
                 'strength_factor_for_upper_skin' : 1.0, # the yield stress is multiplied by this factor for the upper skin

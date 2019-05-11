@@ -69,11 +69,11 @@ def read_db(db_name):
     output_dict['lift_ell_maneuver'] = []
     output_dict['lift_ell_span'] = []
     output_dict['vonmises'] = []
-    alpha = []
     alpha_maneuver = []
     rho = []
     rho_maneuver = []
-    v = []
+    output_dict['alpha'] = []
+    output_dict['v'] = []
     output_dict['CL'] = []
     output_dict['CD'] = []
     output_dict['AR'] = []
@@ -138,11 +138,11 @@ def read_db(db_name):
 
             output_dict['twist'].append(case.outputs[name+'.geometry.twist'])
 
-        alpha.append(case.outputs['alpha'] * np.pi / 180.)
         alpha_maneuver.append(case.outputs['alpha_maneuver'] * np.pi / 180.)
         rho.append(case.outputs['rho'])
         rho_maneuver.append(case.outputs['rho'])
-        v.append(case.outputs['v'])
+        output_dict['alpha'].append(case.outputs['alpha'] * np.pi / 180.)
+        output_dict['v'].append(case.outputs['v'])
         output_dict['cg'].append(case.outputs['{pt_name}.cg'.format(pt_name=pt_name)])
         output_dict['total_weight'].append(case.outputs['AS_point_0.total_perf.total_weight'])
 
@@ -254,20 +254,20 @@ def read_db(db_name):
     for i in range(num_iters):
         for j, name in enumerate(names):
             m_vals = output_dict['mesh'][i*n_names+j].copy()
-            a = alpha[i]
+            a = output_dict['alpha'][i]
             cosa = np.cos(a)
             sina = np.sin(a)
 
             forces = np.sum(sec_forces[i*n_names+j], axis=0)
 
             lift = (-forces[:, 0] * sina + forces[:, 2] * cosa) / \
-                widths[i*n_names+j]/0.5/rho[i][0]/v[i][0]**2
+                widths[i*n_names+j]/0.5/rho[i][0]/output_dict['v'][i][0]**2
             a_maneuver = alpha_maneuver[i]
             cosa_maneuver = np.cos(a_maneuver)
             sina_maneuver = np.sin(a_maneuver)
             forces_maneuver = np.sum(sec_forces_maneuver[i*n_names+j], axis=0)
             lift_maneuver= (-forces_maneuver[:, 0] * sina_maneuver + forces_maneuver[:, 2] * cosa_maneuver) / \
-                widths_maneuver[i*n_names+j]/0.5/rho_maneuver[i][1]/v[i][1]**2
+                widths_maneuver[i*n_names+j]/0.5/rho_maneuver[i][1]/output_dict['v'][i][1]**2
 
             span = (m_vals[0, :, 1] / (m_vals[0, -1, 1] - m_vals[0, 0, 1]))
             span = span - span[0]

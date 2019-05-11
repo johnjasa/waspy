@@ -43,9 +43,24 @@ def get_surfaces(case_settings):
     # We only provide the left half of the wing because we use symmetry.
     # Print the following mesh and elements of the mesh to better understand the form.
 
-    mesh[:, :, 1] = np.linspace(-span/2, 0, ny)
-    mesh[0, :, 0] = 0.34 * root_chord * np.linspace(1.0, 0., ny)
-    mesh[-1, :, 0] = root_chord * (np.linspace(0.4, 1.0, ny) + 0.34 * np.linspace(1.0, 0., ny))
+    span_cos_spacing = 0.5
+
+    beta = np.linspace(0, np.pi/2, ny)
+
+    # mixed spacing with span_cos_spacing as a weighting factor
+    # this is for the spanwise spacing
+    cosine = .5 * np.cos(beta)  # cosine spacing
+    uniform = np.linspace(0, .5, ny)[::-1]  # uniform spacing
+    half_wing = cosine * span_cos_spacing + (1 - span_cos_spacing) * uniform
+    wing = -half_wing * span
+
+    rev_wing = (0.5 - half_wing) * 2
+    rev_wing *= 0.6
+    rev_wing += 0.4
+
+    mesh[:, :, 1] = wing
+    mesh[0, :, 0] = 0.34 * root_chord * half_wing * 2
+    mesh[-1, :, 0] = root_chord * (rev_wing + 0.34 * half_wing * 2)
     mesh[1, :, 0] = ( mesh[-1, :, 0] + mesh[0, :, 0] ) / 2
 
     chord_cos_spacing = 0.
@@ -58,7 +73,7 @@ def get_surfaces(case_settings):
                 'S_ref_type' : 'wetted', # how we compute the wing area,
                                          # can be 'wetted' or 'projected'
                 'mesh' : mesh,
-                'twist_cp' : np.array([6., 7., 7., 7.]),
+                'twist_cp' : np.array([6., 7., 7., 7., 7., 7.]),
 
                 'fem_model_type' : 'wingbox',
                 'data_x_upper' : upper_x,
@@ -66,8 +81,8 @@ def get_surfaces(case_settings):
                 'data_y_upper' : upper_y,
                 'data_y_lower' : lower_y,
 
-                'spar_thickness_cp' : np.array([0.004, 0.004, 0.004, 0.004]), # [m]
-                'skin_thickness_cp' : np.array([0.003, 0.006, 0.010, 0.012]), # [m]
+                'spar_thickness_cp' : np.array([0.004, 0.004, 0.004, 0.004, 0.004, 0.004]), # [m]
+                'skin_thickness_cp' : np.array([0.003, 0.006, 0.010, 0.012, 0.012, 0.012]), # [m]
 
                 'original_wingbox_airfoil_t_over_c' : 0.12,
 
@@ -87,11 +102,11 @@ def get_surfaces(case_settings):
                 'k_lam' : 0.05,         # percentage of chord with laminar
                                         # flow, used for viscous drag
                 'c_max_t' : .38,        # chordwise location of maximum thickness
-                't_over_c_cp' : np.array([0.1, 0.1, 0.15, 0.15]),
+                't_over_c_cp' : np.array([0.1, 0.1, 0.15, 0.15, 0.15, 0.15]),
 
                 # Structural values are based on aluminum 7075
                 'E' : 73.1e9,              # [Pa] Young's modulus
-                'G' : (73.1e9/2/1.33),     # [Pa] shear modulus (calculated using E and the Poisson's ratio here)
+                'G' : (73.1e9/2/1.30),     # [Pa] shear modulus (calculated using E and the Poisson's ratio here)
                 'yield' : (420.e6 / 1.5),  # [Pa] allowable yield stress
                 'mrho' : 2.78e3,           # [kg/m^3] material density
                 'strength_factor_for_upper_skin' : 1.0, # the yield stress is multiplied by this factor for the upper skin
