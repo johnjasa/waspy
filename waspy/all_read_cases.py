@@ -154,14 +154,13 @@ def read_db(db_name):
             output_dict['point_masses_exist'] = False
             pass
 
-    fem_origin_dict = {}
     yield_stress_dict = {}
 
     for name in names:
         surface = cr.system_metadata[name]['component_options']['surface']
         yield_stress_dict[name + '_yield_stress'] = surface['yield']
 
-        fem_origin_dict[name + '_fem_origin'] = (surface['data_x_upper'][0].real *(surface['data_y_upper'][0].real-surface['data_y_lower'][0].real) + \
+        output_dict[name + '_fem_origin'] = (surface['data_x_upper'][0].real *(surface['data_y_upper'][0].real-surface['data_y_lower'][0].real) + \
         surface['data_x_upper'][-1].real*(surface['data_y_upper'][-1].real-surface['data_y_lower'][-1].real)) / \
         ( (surface['data_y_upper'][0].real-surface['data_y_lower'][0].real) + (surface['data_y_upper'][-1].real-surface['data_y_lower'][-1].real))
 
