@@ -121,7 +121,7 @@ def add_driver(prob, case_settings):
     prob.driver.options['optimizer'] = "SNOPT"
     prob.driver.opt_settings['Major optimality tolerance'] = 1e-6
     prob.driver.opt_settings['Major feasibility tolerance'] = 1e-6
-    prob.driver.opt_settings['Major iterations limit'] = 200
+    prob.driver.opt_settings['Major iterations limit'] = 1000
     # prob.driver.opt_settings['Verify level'] = -1
     # prob.driver.opt_settings['Nonderivative linesearch'] = None
     # prob.driver.opt_settings['Hessian frequency'] = 10

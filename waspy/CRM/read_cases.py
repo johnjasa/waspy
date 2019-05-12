@@ -3,7 +3,7 @@ import pickle
 from waspy.all_read_cases import load_all_cases, print_results, plot_thicknesses, plot_lifts, plot_tc, plot_twist, folders
 
 
-read_OM_db = False
+read_OM_db = True
 
 if read_OM_db:
     data = load_all_cases()
