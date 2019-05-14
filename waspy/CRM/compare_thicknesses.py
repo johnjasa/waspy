@@ -1460,26 +1460,54 @@ tim_twist = np.array([
     [0.979044,	-4.85181],
     ])
 
-plt.figure(figsize=(10,8))
-plt.plot(upper_thickness[::2,0], upper_thickness[::2,1], label = 'Brooks et al. upper skin', c='C1')
-plt.plot(lower_thickness[::2,0], lower_thickness[::2,1], label = 'Brooks et al. lower skin', c='C2')
-plt.plot(OAS_x*29.4, OAS_skin, label = 'OpenAeroStruct', c='C0', linewidth=2.0)
-plt.plot([29.4*.1, 29.4*.1], [0, 0.023], color='#696969', label='Fuselage junction')
+# plt.figure(figsize=(10,8))
+# plt.plot(upper_thickness[::2,0], upper_thickness[::2,1], label = 'Brooks et al. upper skin', c='C1')
+# plt.plot(lower_thickness[::2,0], lower_thickness[::2,1], label = 'Brooks et al. lower skin', c='C2')
+# plt.plot(OAS_x*29.4, OAS_skin, label = 'OpenAeroStruct', c='C0', linewidth=2.0)
+# plt.plot([29.4*.1, 29.4*.1], [0, 0.023], color='#696969', label='Fuselage junction')
+#
+# plt.annotate('Fuselage junction', (3.5, 0.005), color='#696969')
+# plt.annotate('Brooks et al. upper skin', (22, 0.01), color='C1')
+# plt.annotate('Brooks et al. lower skin', (7., 0.012), color='C2')
+# plt.annotate('OpenAeroStruct', (13, 0.021), color='C0')
+#
+# plt.ylabel('Skin thickness [m]')
+# plt.xlabel('Spanwise distance [m]')
+# niceplots.adjust_spines()
+# plt.tight_layout()
+#
+# plt.savefig('hifi_comparison.pdf')
 
-plt.annotate('Fuselage junction', (3.5, 0.005), color='#696969')
-plt.annotate('Brooks et al. upper skin', (22, 0.01), color='C1')
-plt.annotate('Brooks et al. lower skin', (7., 0.012), color='C2')
-plt.annotate('OpenAeroStruct', (13, 0.021), color='C0')
+fig, axarr = plt.subplots(2, figsize=(10, 10))
 
-plt.ylabel('Skin thickness [m]')
-plt.xlabel('Spanwise distance [m]')
-niceplots.adjust_spines()
+axarr[0].plot(upper_thickness[::2,0], upper_thickness[::2,1], label = 'Brooks et al. upper skin', c='C1')
+axarr[0].plot(lower_thickness[::2,0], lower_thickness[::2,1], label = 'Brooks et al. lower skin', c='C2')
+axarr[0].plot(OAS_x*29.4, OAS_skin, label = 'OpenAeroStruct', c='C0', linewidth=2.0)
+axarr[0].plot([29.4*.1, 29.4*.1], [0, 0.023], color='#696969', label='Fuselage junction')
+
+axarr[0].annotate('Fuselage junction', (3.5, 0.005), color='#696969')
+axarr[0].annotate('Brooks et al. upper skin', (22, 0.01), color='C1')
+axarr[0].annotate('Brooks et al. lower skin', (6., 0.012), color='C2')
+axarr[0].annotate('OpenAeroStruct', (13, 0.021), color='C0')
+
+axarr[0].set_ylabel('Skin thickness [m]')
+
+axarr[1].plot(tim_toc[:,0], tim_toc[:,1], linewidth=2., label = 'Brooks et al.', c='C1')
+axarr[1].plot(OAS_x*29.4, OAS_toverc, label = 'OpenAeroStruct', c='C0', linewidth=2.0)
+axarr[1].annotate('Brooks et al.', (5., 0.08), color='C1')
+axarr[1].annotate('OpenAeroStruct', (20, 0.10), color='C0')
+
+axarr[1].set_xlabel('Spanwise distance [m]')
+axarr[1].set_ylabel('Thickness-to-chord ratio')
+
+niceplots.adjust_spines(axarr[0])
+niceplots.adjust_spines(axarr[1])
+
 plt.tight_layout()
-
 plt.savefig('hifi_comparison.pdf')
 
 
-plt, axarr = plt.subplots(3, figsize=(10, 14))
+fig, axarr = plt.subplots(3, figsize=(10, 14))
 
 axarr[0].plot(upper_thickness[::2,0], upper_thickness[::2,1], label = 'Brooks et al. upper skin', c='C1')
 axarr[0].plot(lower_thickness[::2,0], lower_thickness[::2,1], label = 'Brooks et al. lower skin', c='C2')
