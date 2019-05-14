@@ -18,14 +18,22 @@ y = 0
 plt.figure()
 for idx, wing in enumerate(wings):
     mesh = data[wing]['def_mesh'][0]
+    point_mass_loc = data[wing]['point_mass_locations'][0][0]
 
     mesh = mesh[:, ::-1, :]
     mesh[:, :, 1] = -mesh[:, :, 1]
     mesh[:, :, 0] = -mesh[:, :, 0]
 
+    point_mass_loc[0] *= -1
+    point_mass_loc[1] *= -1
+
     mesh[:, :, 0] = mesh[:, :, 0] - np.max(mesh[:, 0, 0]) - idx**.35 * 18
     mesh[:, :, 1] = mesh[:, :, 1] - np.min(mesh[:, 0, 1])
     mesh[:, :, 0] = mesh[:, :, 0] + crm_y_offset
+
+    point_mass_loc[0] = point_mass_loc[0] - np.max(mesh[:, 0, 0]) - idx**.35 * 18
+    point_mass_loc[1] = point_mass_loc[1] - np.min(mesh[:, 0, 1])
+    point_mass_loc[0] = point_mass_loc[0] + crm_y_offset
 
     le = mesh[0, :, :]
     te = mesh[-1, :, :]
@@ -40,6 +48,7 @@ for idx, wing in enumerate(wings):
     plt.plot(mesh[:, :, x], mesh[:, :, y], lw=1, color='gray')
     plt.plot(mesh[:, :, x].T, mesh[:, :, y].T, lw=1, color='gray')
 
+    # plt.scatter(point_mass_loc[x], point_mass_loc[y], s=70, color='b')
 
 ax = plt.gca()
 ax.set_aspect('equal')

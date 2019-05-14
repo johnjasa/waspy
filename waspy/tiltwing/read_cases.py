@@ -41,22 +41,22 @@ lift_labels = {
 
 plot_lifts(data, folders, live_plot=False, annotate_data=lift_labels)
 
-anchor = 0.115
+anchor = 0.105
 spacing = 0.005
 tc_labels = {
     'viscous' : (0.2, 0.19),
-    'engine_mass' : (0.1, anchor - 0 * spacing),
-    'fuel_weight' : (0.1, anchor - 1 * spacing),
-    'struct_weight' : (0.1, anchor - 2 * spacing),
-    'engine_thrust' : (0.1, anchor - 3 * spacing),
-    'baseline' : (0.1, anchor - 4 * spacing),
-    'wave_drag' : (0.1, anchor - 5 * spacing),
+    'engine_mass' : (0.0, anchor - 0 * spacing),
+    'fuel_weight' : (0.0, anchor - 1 * spacing),
+    'struct_weight' : (0.0, anchor - 2 * spacing),
+    'engine_thrust' : (0.0, anchor - 3 * spacing),
+    'baseline' : (0.0, anchor - 4 * spacing),
+    'wave_drag' : (0.0, anchor - 5 * spacing),
 }
 
 plot_tc(data, folders, live_plot=False, annotate_data=tc_labels)
 
 anchor = 5
-x_anchor = 0.3
+x_anchor = 0.15
 spacing = 0.16
 twist_labels = {
     'baseline' : (x_anchor, anchor + spacing),

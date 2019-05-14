@@ -13,15 +13,6 @@ else:
     with open('data.pkl', 'rb') as f:
         data = pickle.load(f)
 
-thickness_labels = {
-    'baseline' : (0.5, 0.008),
-    'viscous' : (0.0481, 0.0055),
-    'wave_drag' : (-0.03, 0.0097),
-    'struct_weight' : (0.0919, 0.0120),
-    'fuel_weight' : (0.317, 0.0100),
-    'engine_mass' : (0.19, 0.0113),
-    'engine_thrust' : (-0.03, 0.0093),
-}
 anchor = .01
 x_anchor = 0.6
 spacing = 0.0004
@@ -56,19 +47,19 @@ plot_lifts(data, folders, live_plot=False, annotate_data=lift_labels)
 
 tc_labels = {
     'viscous' : (0.2, 0.19),
-    'fuel_weight' : (0.05, 0.17),
-    'struct_weight' : (0.5, 0.14),
-    'engine_thrust' : (0.1, 0.125),
-    'wave_drag' : (0.1, 0.12),
-    'engine_mass' : (0.1, 0.115),
-    'baseline' : (0.1, 0.110),
+    'fuel_weight' : (0.0, 0.172),
+    'struct_weight' : (0.3, 0.16),
+    'engine_thrust' : (0.05, 0.125),
+    'wave_drag' : (0.05, 0.12),
+    'engine_mass' : (0.05, 0.115),
+    'baseline' : (0.05, 0.110),
 }
 
 plot_tc(data, folders, live_plot=False, annotate_data=tc_labels)
 
 anchor = 6
 x_anchor = 0.4
-spacing = 0.13
+spacing = 0.146
 twist_labels = {
     'baseline' : (x_anchor, anchor + spacing),
     'viscous' : (x_anchor, anchor - 5 * spacing),

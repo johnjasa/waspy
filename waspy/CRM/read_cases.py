@@ -14,13 +14,13 @@ else:
         data = pickle.load(f)
 
 thickness_labels = {
-    'baseline' : (0.8, 0.02),
     'viscous' : (0.0576, 0.0168),
     'wave_drag' : (0.0576, 0.012),
-    'struct_weight' : (0.28, 0.024),
     'fuel_weight' : (0.6, 0.026),
-    'engine_mass' : (0.8, 0.019),
-    'engine_thrust' : (0.8, 0.018),
+    'baseline' : (0.2, 0.010),
+    'struct_weight' : (0.2, 0.009),
+    'engine_mass' : (0.2, 0.008),
+    'engine_thrust' : (0.2, 0.007),
 }
 
 print_results(data)
@@ -43,19 +43,19 @@ plot_lifts(data, folders, live_plot=False, annotate_data=lift_labels)
 
 tc_labels = {
     'wave_drag' : (0.6, 0.142),
-    'struct_weight' : (0.35, 0.122),
-    'fuel_weight' : (0.05, 0.124),
-    'baseline' : (0.2, 0.089),
-    'viscous' : (0.2, 0.086),
-    'engine_mass' : (0.2, 0.083),
-    'engine_thrust' : (0.2, 0.080),
+    'fuel_weight' : (0.0, 0.124),
+    'struct_weight' : (0.3, 0.12),
+    'baseline' : (0.15, 0.085),
+    'viscous' : (0.15, 0.082),
+    'engine_mass' : (0.15, 0.079),
+    'engine_thrust' : (0.15, 0.076),
 }
 
 plot_tc(data, folders, live_plot=False, annotate_data=tc_labels)
 
 anchor = 6
 x_anchor = 0.4
-spacing = 0.2
+spacing = 0.22
 twist_labels = {
     'baseline' : (x_anchor, anchor + spacing),
     'viscous' : (x_anchor, anchor - 5 * spacing),

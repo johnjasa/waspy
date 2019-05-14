@@ -332,10 +332,10 @@ case_keys = {
     'baseline' : 'Baseline',
     'viscous' : 'viscous drag',
     'wave_drag' : 'wave drag',
-    'struct_weight' : 'struct weight',
-    'fuel_weight' : 'fuel weight',
-    'engine_mass' : 'engine weight',
-    'engine_thrust' : 'engine thrust',
+    'struct_weight' : 'struct-weight relief',
+    'fuel_weight' : 'fuel-weight relief',
+    'engine_mass' : 'engine-weight relief',
+    'engine_thrust' : 'engine thrust loads',
 }
 
 import seaborn as sns
