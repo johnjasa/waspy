@@ -168,7 +168,7 @@ def add_opt_problem(prob, case_settings):
     prob.model.add_design_var('wing.twist_cp', lower=-15., upper=15., scaler=0.1)
     prob.model.add_design_var('wing.spar_thickness_cp', lower=0.001, upper=0.1, scaler=1e2)
     prob.model.add_design_var('wing.skin_thickness_cp', lower=0.001, upper=0.1, scaler=1e2)
-    prob.model.add_design_var('wing.geometry.t_over_c_cp', lower=0.07, upper=0.2, scaler=0.1)
+    prob.model.add_design_var('wing.geometry.t_over_c_cp', lower=0.07, upper=0.2, scaler=10.)
     prob.model.add_design_var('fuel_mass', lower=0., upper=2e5, scaler=1e-3)
     prob.model.add_design_var('alpha_maneuver', lower=-15., upper=55)
 

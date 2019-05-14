@@ -76,7 +76,7 @@ else:
     # no xaxis ticks
     ax.xaxis.set_ticks([])
 
-plt.annotate('uCRM', (8, 20), color=colors[0])
+plt.annotate('uCRM-9', (8, 20), color=colors[0])
 plt.annotate('Q400', (5, 6.5), color=colors[1])
 plt.annotate('Commuter', (9, 0.2), color=colors[2])
 
