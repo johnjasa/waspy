@@ -456,7 +456,7 @@ def plot_thicknesses(data, cases, live_plot=True, annotate_data={}):
     niceplots.adjust_spines()
 
     plt.xlabel('Normalized span')
-    plt.ylabel('Skin thickness, [m]')
+    plt.ylabel('Skin thickness [m]')
 
     if live_plot:
         plt.show()
@@ -565,7 +565,7 @@ def plot_twist(data, cases, live_plot=True, annotate_data={}):
     niceplots.adjust_spines()
 
     plt.xlabel('Normalized span')
-    plt.ylabel('Twist, [degrees]')
+    plt.ylabel('Twist [degrees]')
 
     if live_plot:
         plt.show()

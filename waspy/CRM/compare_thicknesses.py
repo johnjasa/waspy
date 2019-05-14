@@ -6,7 +6,7 @@ import pickle
 # matplotlib.rcParams['text.usetex'] = 'true'
 # matplotlib.rcParams['font.size'] = '20'
 # matplotlib.rcParams['font.weight'] = 'bold'
-from waspy.all_read_cases import load_all_cases, print_results, plot_thicknesses, plot_lifts, plot_tc, plot_twist, folders, get_flat_data
+from waspy.all_read_cases import load_all_cases, print_results, plot_thicknesses, plot_lifts, plot_tc, plot_twist, folders, get_flat_data, compute_span
 
 read_OM_db = False
 
@@ -23,6 +23,8 @@ case_data = data['engine_thrust']
 mesh = case_data['mesh'][-1]
 skin_thickness = case_data['skin_thickness'][-1][0]
 t_over_c = case_data['t_over_c'][-1][0]
+OAS_twist = case_data['twist'][-1][0]
+span = compute_span(mesh)
 
 OAS_x, OAS_skin = get_flat_data(mesh, skin_thickness)
 OAS_x, OAS_toverc = get_flat_data(mesh, t_over_c)
@@ -1398,7 +1400,75 @@ tim_toc = np.array([
 [	29.406461560651	,	0.085705548439383		]	,
 ])
 
-plt, axarr = plt.subplots(2, figsize=(10, 8))
+tim_twist = np.array([
+    [0.11263,	3.0093],
+    [0.133614,	2.65279],
+    [0.158097,	2.23685],
+    [0.176278,	1.96953],
+    [0.195846,	1.76178],
+    [0.210542,	1.4646],
+    [0.232221,	1.13786],
+    [0.2483,	0.930009],
+    [0.267856,	0.811543],
+    [0.290224,	0.544352],
+    [0.311196,	0.277119],
+    [0.331479,	-0.0496584],
+    [0.349656,	-0.287213],
+    [0.368543,	-0.614031],
+    [0.383925,	-0.821907],
+    [0.403489,	-0.999896],
+    [0.421654,	-1.14817],
+    [0.440524,	-1.35594],
+    [0.458693,	-1.53397],
+    [0.474062,	-1.65256],
+    [0.490145,	-1.89017],
+    [0.508305,	-2.00868],
+    [0.525074,	-2.15699],
+    [0.546026,	-2.27542],
+    [0.569761,	-2.33423],
+    [0.587908,	-2.36346],
+    [0.608839,	-2.33307],
+    [0.63117,	-2.33241],
+    [0.651407,	-2.3318],
+    [0.671644,	-2.3312],
+    [0.690486,	-2.33064],
+    [0.717714,	-2.41912],
+    [0.742155,	-2.53744],
+    [0.767999,	-2.71524],
+    [0.788257,	-2.86344],
+    [0.808515,	-3.01165],
+    [0.828761,	-3.07057],
+    [0.84344,	-3.24871],
+    [0.860903,	-3.36724],
+    [0.874876,	-3.48587],
+    [0.888156,	-3.63428],
+    [0.904933,	-3.84212],
+    [0.921012,	-4.04997],
+    [0.943388,	-4.37668],
+    [0.964361,	-4.64392],
+    [0.979044,	-4.85181],
+    ])
+
+plt.figure(figsize=(10,8))
+plt.plot(upper_thickness[::2,0], upper_thickness[::2,1], label = 'Brooks et al. upper skin', c='C1')
+plt.plot(lower_thickness[::2,0], lower_thickness[::2,1], label = 'Brooks et al. lower skin', c='C2')
+plt.plot(OAS_x*29.4, OAS_skin, label = 'OpenAeroStruct', c='C0', linewidth=2.0)
+plt.plot([29.4*.1, 29.4*.1], [0, 0.023], color='#696969', label='Fuselage junction')
+
+plt.annotate('Fuselage junction', (3.5, 0.005), color='#696969')
+plt.annotate('Brooks et al. upper skin', (22, 0.01), color='C1')
+plt.annotate('Brooks et al. lower skin', (7., 0.012), color='C2')
+plt.annotate('OpenAeroStruct', (13, 0.021), color='C0')
+
+plt.ylabel('Skin thickness [m]')
+plt.xlabel('Spanwise distance [m]')
+niceplots.adjust_spines()
+plt.tight_layout()
+
+plt.savefig('hifi_comparison.pdf')
+
+
+plt, axarr = plt.subplots(3, figsize=(10, 16))
 
 axarr[0].plot(upper_thickness[::2,0], upper_thickness[::2,1], label = 'Brooks et al. upper skin', c='C1')
 axarr[0].plot(lower_thickness[::2,0], lower_thickness[::2,1], label = 'Brooks et al. lower skin', c='C2')
@@ -1417,11 +1487,23 @@ axarr[1].plot(OAS_x*29.4, OAS_toverc, label = 'OpenAeroStruct', c='C0', linewidt
 axarr[1].annotate('Brooks et al.', (5., 0.08), color='C1')
 axarr[1].annotate('OpenAeroStruct', (20, 0.10), color='C0')
 
-axarr[1].set_xlabel('Spanwise distance [m]')
+axarr[1].scatter([0, 0], [0.001, 0.199], color='white')
+axarr[1].set_ylim([0., 0.20])
+
 axarr[1].set_ylabel('Thickness-to-chord ratio')
+
+axarr[2].plot(tim_twist[:,0] * 29.4, tim_twist[:,1], linewidth=2., label = 'Brooks et al.', c='C1')
+axarr[2].plot(span*29.4, OAS_twist - (OAS_twist[-3] - tim_twist[0, 1] - 0.05), label = 'OpenAeroStruct', c='C0', linewidth=2.0)
+axarr[2].annotate('Brooks et al.', (2., 0.), color='C1')
+axarr[2].annotate('OpenAeroStruct', (15, 3), color='C0')
+
+axarr[2].set_ylabel('Twist [degrees]')
 
 niceplots.adjust_spines(axarr[0])
 niceplots.adjust_spines(axarr[1])
+niceplots.adjust_spines(axarr[2])
+
+axarr[-1].set_xlabel('Spanwise distance [m]')
 
 plt.tight_layout()
-plt.savefig('hifi_comparison.pdf')
+plt.savefig('full_hifi_comparison.pdf')
