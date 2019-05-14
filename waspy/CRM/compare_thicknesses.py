@@ -1478,7 +1478,7 @@ tim_twist = np.array([
 #
 # plt.savefig('hifi_comparison.pdf')
 
-fig, axarr = plt.subplots(2, figsize=(10, 10))
+fig, axarr = plt.subplots(2, figsize=(10, 12))
 
 axarr[0].plot(upper_thickness[::2,0], upper_thickness[::2,1], label = 'Brooks et al. upper skin', c='C1')
 axarr[0].plot(lower_thickness[::2,0], lower_thickness[::2,1], label = 'Brooks et al. lower skin', c='C2')
@@ -1499,6 +1499,9 @@ axarr[1].annotate('OpenAeroStruct', (20, 0.10), color='C0')
 
 axarr[1].set_xlabel('Spanwise distance [m]')
 axarr[1].set_ylabel('Thickness-to-chord ratio')
+
+axarr[1].scatter([0, 0], [0.001, 0.139], color='white')
+axarr[1].set_ylim([0., 0.14])
 
 niceplots.adjust_spines(axarr[0])
 niceplots.adjust_spines(axarr[1])

@@ -572,3 +572,87 @@ def plot_twist(data, cases, live_plot=True, annotate_data={}):
     else:
         # plt.tight_layout()
         plt.savefig('twists.pdf')
+
+
+
+def ax_plot_thicknesses(ax, data, cases, live_plot=True, annotate_data={}):
+    for idx, case in enumerate(cases):
+        case_data = data[case]
+
+        mesh = case_data['mesh'][-1]
+        skin_thickness = case_data['skin_thickness'][-1][0]
+
+        span, skin_thickness = get_flat_data(mesh, skin_thickness)
+
+        if idx > 0:
+            label = 'w/o ' + case_keys[case]
+            ax.plot(span, skin_thickness, label=label, color=colors[idx])
+        else:
+            label = case_keys[case]
+            ax.plot(span, skin_thickness, label=label, color=colors[idx], zorder=100)
+
+        if not live_plot:
+            ax.annotate(label, annotate_data[case], color=colors[idx])
+
+def ax_plot_lifts(ax, data, cases, live_plot=True, annotate_data={}):
+
+    for idx, case in enumerate(cases):
+        case_data = data[case]
+
+        mesh = case_data['mesh'][-1]
+        lift = case_data['lift'][-1]
+
+        span = compute_span(mesh)
+
+        span = (span[1:] + span[:-1]) / 2
+
+        if idx > 0:
+            label = 'w/o ' + case_keys[case]
+            ax.plot(span, lift, label=label, color=colors[idx])
+        else:
+            label = case_keys[case]
+            ax.plot(span, lift, label=label, color=colors[idx], zorder=100)
+            ax.plot(case_data['lift_ell_span'][-1], case_data['lift_ell'][-1], '--', color='gray', label='Elliptical')
+
+        if not live_plot:
+            ax.annotate(label, annotate_data[case], color=colors[idx])
+            if idx == 0:
+                ax.annotate('Elliptical', annotate_data['elliptical'], color='gray')
+
+def ax_plot_tc(ax, data, cases, live_plot=True, annotate_data={}):
+    for idx, case in enumerate(cases):
+        case_data = data[case]
+
+        mesh = case_data['mesh'][-1]
+        t_over_c = case_data['t_over_c'][-1][0]
+
+        span, t_over_c = get_flat_data(mesh, t_over_c)
+
+        if idx > 0:
+            label = 'w/o ' + case_keys[case]
+            ax.plot(span, t_over_c, label=label, color=colors[idx])
+        else:
+            label = case_keys[case]
+            ax.plot(span, t_over_c, label=label, color=colors[idx], zorder=100)
+
+        if not live_plot:
+            ax.annotate(label, annotate_data[case], color=colors[idx])
+
+def ax_plot_twist(ax, data, cases, live_plot=True, annotate_data={}):
+    for idx, case in enumerate(cases):
+        case_data = data[case]
+
+        mesh = case_data['mesh'][-1]
+        twist = case_data['twist'][-1][0]
+
+        span = compute_span(mesh)
+
+        if idx > 0:
+            label = 'w/o ' + case_keys[case]
+            ax.plot(span, twist, label=label, color=colors[idx])
+        else:
+            label = case_keys[case]
+            ax.plot(span, twist, label=label, color=colors[idx], zorder=100)
+
+        if not live_plot:
+            ax.annotate(label, annotate_data[case], color=colors[idx])
