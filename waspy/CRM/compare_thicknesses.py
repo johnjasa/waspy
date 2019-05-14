@@ -20,10 +20,21 @@ else:
 
 case_data = data['engine_thrust']
 
-mesh = case_data['mesh'][-1]
+mesh = case_data['def_mesh'][-1]
 skin_thickness = case_data['skin_thickness'][-1][0]
 t_over_c = case_data['t_over_c'][-1][0]
-OAS_twist = case_data['twist'][-1][0]
+
+# OAS_twist = case_data['twist'][-1][0]
+LE = mesh[0, :, :]
+TE = mesh[-1, :, :]
+opposite = LE[:, 2] - TE[:, 2]
+hypot = LE - TE
+
+forward_vec = np.array([[-1, 0., 0.]])
+cos_theta = np.zeros((hypot.shape[0]))
+for idx, section in enumerate(hypot):
+    cos_theta[idx] = np.dot(forward_vec, hypot[idx, :]) / np.linalg.norm(forward_vec) / np.linalg.norm(hypot[idx, :])
+OAS_twist = np.arccos(cos_theta) * 180. / np.pi
 span = compute_span(mesh)
 
 OAS_x, OAS_skin = get_flat_data(mesh, skin_thickness)
@@ -1468,7 +1479,7 @@ plt.tight_layout()
 plt.savefig('hifi_comparison.pdf')
 
 
-plt, axarr = plt.subplots(3, figsize=(10, 16))
+plt, axarr = plt.subplots(3, figsize=(10, 14))
 
 axarr[0].plot(upper_thickness[::2,0], upper_thickness[::2,1], label = 'Brooks et al. upper skin', c='C1')
 axarr[0].plot(lower_thickness[::2,0], lower_thickness[::2,1], label = 'Brooks et al. lower skin', c='C2')
@@ -1484,18 +1495,18 @@ axarr[0].set_ylabel('Skin thickness [m]')
 
 axarr[1].plot(tim_toc[:,0], tim_toc[:,1], linewidth=2., label = 'Brooks et al.', c='C1')
 axarr[1].plot(OAS_x*29.4, OAS_toverc, label = 'OpenAeroStruct', c='C0', linewidth=2.0)
-axarr[1].annotate('Brooks et al.', (5., 0.08), color='C1')
+axarr[1].annotate('Brooks et al.', (5., 0.07), color='C1')
 axarr[1].annotate('OpenAeroStruct', (20, 0.10), color='C0')
 
-axarr[1].scatter([0, 0], [0.001, 0.199], color='white')
-axarr[1].set_ylim([0., 0.20])
+axarr[1].scatter([0, 0], [0.001, 0.139], color='white')
+axarr[1].set_ylim([0., 0.14])
 
 axarr[1].set_ylabel('Thickness-to-chord ratio')
 
 axarr[2].plot(tim_twist[:,0] * 29.4, tim_twist[:,1], linewidth=2., label = 'Brooks et al.', c='C1')
 axarr[2].plot(span*29.4, OAS_twist - (OAS_twist[-3] - tim_twist[0, 1] - 0.05), label = 'OpenAeroStruct', c='C0', linewidth=2.0)
 axarr[2].annotate('Brooks et al.', (2., 0.), color='C1')
-axarr[2].annotate('OpenAeroStruct', (15, 3), color='C0')
+axarr[2].annotate('OpenAeroStruct', (22, 3), color='C0')
 
 axarr[2].set_ylabel('Twist [degrees]')
 
