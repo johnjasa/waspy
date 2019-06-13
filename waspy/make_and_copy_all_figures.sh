@@ -14,7 +14,7 @@ cd ..
 
 python plot_planforms.py
 
-cp CRM/*.pdf ~/Dropbox/git/jasa_aviation_2019/figures/CRM/.
-cp Q400/*.pdf ~/Dropbox/git/jasa_aviation_2019/figures/Q400/.
-cp tiltwing/*.pdf ~/Dropbox/git/jasa_aviation_2019/figures/tiltwing/.
-cp planforms.pdf ~/Dropbox/git/jasa_aviation_2019/figures/planforms.pdf
+# cp CRM/*.pdf ~/Dropbox/git/jasa_aviation_2019/figures/CRM/.
+# cp Q400/*.pdf ~/Dropbox/git/jasa_aviation_2019/figures/Q400/.
+# cp tiltwing/*.pdf ~/Dropbox/git/jasa_aviation_2019/figures/tiltwing/.
+# cp planforms.pdf ~/Dropbox/git/jasa_aviation_2019/figures/planforms.pdf

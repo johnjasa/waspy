@@ -1,20 +1,24 @@
-# waspy
-Wing Aerostructural Studies in Python
+# waspy - Wing Aerostructural Studies in Python
 
 ![WASPY](waspy.jpg)
 
 This repo contains all the files needed to produce the results presented in Jasa et al's 2019 Aviation paper on aerostructural wing design.
-We use [OpenAeroStruct](https://github.com/mdolab/OpenAeroStruct) for all studies.
+We use the aerostructural design tool [OpenAeroStruct](https://github.com/mdolab/OpenAeroStruct) and the optimization framework [OpenMDAO](https://github.com/OpenMDAO/OpenMDAO) for all studies.
 
-## Gameplan
+## How to run
 
-First focus on uCRM. Get all results for it first. Then branch out to Q400 and tiltwing if time allows.
+Waspy requires OpenAeroStruct and OpenMDAO.
+Follow the instructions for those packages for installation for your system.
+After those are installed, you can install waspy by performing `pip install -e .` in the base level folder within waspy.
+You should now be able to run any of the `run_aerostruct.py` files within the subfolders.
 
-0. baseline wing
-1. viscous
-2. wave drag added
-3. compressibility?
-4. structural weight relief
-5. fuel weight relief
-6. engine mass added
-7. engine thrust added
+## Repo organization
+
+The waspy package includes scripts to run and visualize the results presented in the paper.
+Specifically, the repo is organized into three folders: `CRM`, `Q400`, and `tiltwing`, which correspond to the three types of aircraft studied in the paper.
+Each one of these folders contains run scripts for all seven cases for each aircraft, resulting in a total of 21 run scripts.
+
+There are some helper files to run all of the cases simultaneously.
+In each aircraft folder, there's a `run_all_cases.sh` bash script that launches all seven runs for that aircraft simultaneously.
+
+After all the cases have been run, you can use the bash script `make_and_copy_all_figures.sh` which will create all of the plots shown in the paper.
