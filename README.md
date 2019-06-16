@@ -1,6 +1,4 @@
-# waspy - Wing Aerostructural Studies in Python
-
-![WASPY](waspy.jpg)
+# WasPy - Wing Aerostructural Studies in Python
 
 This repo contains all the files needed to produce the results presented in Jasa et al's 2019 Aviation paper on aerostructural wing design.
 We use the aerostructural design tool [OpenAeroStruct](https://github.com/mdolab/OpenAeroStruct) and the optimization framework [OpenMDAO](https://github.com/OpenMDAO/OpenMDAO) for all studies.
